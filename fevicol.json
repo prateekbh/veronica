@@ -1,0 +1,6 @@
+{
+    "fevicol":{
+        "tagFolder":"tags",
+        "routeFile": "/router/routes.js"
+    }
+}

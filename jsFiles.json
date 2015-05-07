@@ -1,0 +1,12 @@
+{
+    "riot":[""],
+    "riotTags":[
+        "/tags/hp-card/hp-card.tag",
+        "/tags/hp-cardlist/hp-cardlist.tag",
+        "/tags/hp-header/hp-header.tag",
+        "/tags/hp-settings/hp-settings.tag"
+    ],
+    "fevicol_core":["/fevicol/core.js"],
+    "router":["/router/router.js"],
+
+}

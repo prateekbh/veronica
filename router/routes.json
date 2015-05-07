@@ -1,0 +1,16 @@
+{
+    "routes":[
+        {
+            url: "/",
+            state:"home",
+            component:"hp-cardlist",
+            preserveDataOnUnmount:true
+        },
+        {
+            url: "/settings",
+            state:"settings",
+            component:"hp-settings",
+            preserveDataOnUnmount:false
+        }
+    ]
+}
