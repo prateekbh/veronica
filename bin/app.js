@@ -1510,7 +1510,7 @@ riot.mountTo = riot.mount
     window.riot = riot
 
 })(typeof window != 'undefined' ? window : undefined);
-riot.tag('hp-card', '<h1 style="color:red">{opts.title}</h1><div id="content"></div>', function(opts) {
+riot.tag('hp-card', '<h1>{opts.title}</h1><div id="content"><yield></yield></div>', function(opts) {
 
 });
 riot.tag('hp-cardlist', '<hp-instacard each="{card, index in cards}" class="card-{index}" riot-style="-webkit-animation-delay:{(index+1)*50}ms" title="How u doin???" model="{card}"></hp-instacard>', function(opts) {
@@ -1554,7 +1554,7 @@ riot.tag('hp-header', '<div class="container-icon"><img class="icon" width="24" 
 riot.tag('hp-instacard', '<div class="img"><img riot-src="{opts.model.status.img}" class="img-insta"></div></div><div class="desc"> {opts.model.status.text} </div>', function(opts) {
     
 });
-riot.tag('hp-settings', '<section class="hp-card"><div class="header"> Change your hashtag </div><div class="body"><div class="text"> Set your new hashtag </div><div class="input"><input class="hashtag"></input></div></div><div class="action-panel"><button class="submit" onclick="{saveHashtag}">Save</button></div></section>', function(opts) {
+riot.tag('hp-settings', '<hp-card title="Change your hashtag"><div class="input"><input class="hashtag"></input></div><div class="action-panel"><button class="submit" onclick="{saveHashtag}">Save</button></div></hp-card>', 'hp-settings hp-card{ background: #fff; display: block; margin: 5px; } hp-settings hp-card h1{ border-bottom: 1px solid yellow; color: black; font-size: 20px; font-weight: normal; padding: 5px; } hp-settings .input{ padding: 10px; } hp-settings .action-panel{ border-top:1px solid #ccc; padding: 10px; } hp-settings input{ padding: 5px; font-size: 14px; width: 100%; }', function(opts) {
     this.saveHashtag = function() {
         var hashValue = this.root.querySelector(".hashtag").value || '';
         localStorage.setItem("hashTag", hashValue);
