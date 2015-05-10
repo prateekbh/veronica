@@ -44,6 +44,10 @@ module.exports = function(grunt) {
             concat_tags: {
                 src: "tags/**/*.js",
                 dest: tagsFolder+"/compiled_app_tags.js",
+            },
+            concat_app: {
+                src: ["riot_core/riot.js","tags/compiled_app_tags.js","riot_core/veronica.js"],
+                dest: "bin/app.js",
             }
         },
 
@@ -60,5 +64,5 @@ module.exports = function(grunt) {
 
 
     //Task for building the static contents of the application
-    grunt.registerTask("default", ["clean:pre_build","riot", "concat:concat_tags"]);
+    grunt.registerTask("default", ["clean:pre_build","riot", "concat:concat_tags","concat:concat_app"]);
 };

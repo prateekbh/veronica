@@ -3,12 +3,12 @@ riot.tag('hp-card', '<h1 style="color:red">{opts.title}</h1><div id="content"></
 });
 riot.tag('hp-cardlist', '<hp-instacard each="{card, index in cards}" class="card-{index}" riot-style="-webkit-animation-delay:{(index+1)*50}ms" title="How u doin???" model="{card}"></hp-instacard>', function(opts) {
 
-    var myData=fevicol.getCurrentComponentData();
+    var myData=veronica.getCurrentComponentData();
 
     this.isLoading = true;
 
     if(myData.cards==undefined){
-        fevicol.get("response.json").then(function(status, response) {
+        $.get("response.json").then(function(response) {
             var res = JSON.parse(response);
             this.cards = res.response;
             myData.cards=res.response;
@@ -48,10 +48,4 @@ riot.tag('hp-settings', '<section class="hp-card"><div class="header"> Change yo
         localStorage.setItem("hashTag", hashValue);
     }
     
-});
-
-riot.tag('inner-html', '', function(opts) {
-	var p = this.parent.root
-	while (p.firstChild) this.root.appendChild(p.firstChild)
-
 });

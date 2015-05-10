@@ -16,14 +16,15 @@
     <section class="app-body">
     </section>
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/g/riot@2.0.14(riot.min.js+compiler.min.js)"></script>
-    <script src="/tags/compiled_app_tags.js" type="riot/tag"></script>
-    <script src="/riot_core/fevicol.js"></script>
-    <script src="/riot_core/promises.js"></script>
-    
+    <script src="/bin/app.js"></script>
+    <!--<script src="/riot_core/riot.js"></script>
+    <script src="/riot_core/veronica.js"></script>
+    <script src="/tags/compiled_app_tags.js" type="riot/tag"></script>-->
     <script>
-    fevicol.addRoute(fevicol.createRoute("home","/","hp-cardlist",true));
-    fevicol.addRoute(fevicol.createRoute("settings","/settings","hp-settings"));
+        window.addEventListener("veronica:init",function(){
+            veronica.addRoute(veronica.createRoute("home","/","hp-cardlist",true));
+            veronica.addRoute(veronica.createRoute("settings","/settings","hp-settings"));
+        });
     </script>
 </body>
 
