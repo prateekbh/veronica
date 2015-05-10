@@ -1,14 +1,16 @@
 /* globals riot,ActiveXObject */ ;
+
 (function(window, riot) {
     "use strict";
 
     var veronica = {
-        version: "v0.0.1",
+        version: "v0.0.2",
         settings: {
-            viewTag: "quick-view .container",
+            viewTag: ".app-body",
             maxPageTransitionTime: 500,
             semiQualifiedBrowsers: [
-
+                "UCBrowser",
+                "Opera Mini"
             ]
         }
     };
@@ -16,7 +18,7 @@
     var framework = {};
 
     /* Core ===============*/
-    (function(fw) {
+    (function(fw,window) {
         var appStatus = {};
 
         function Core() {
@@ -31,8 +33,12 @@
             }
         };
 
+        window.$=function(tag,root){
+            return document.querySelectorAll(tag,root);
+        }
+
         fw.Core = Core;
-    })(framework);
+    })(framework,window);
 
     /* Event Bus ===============*/
 
@@ -119,7 +125,16 @@
     /* Promises ===============*/
     (function(veronica) {
         function Promise() {
-            this._callbacks = [];
+            this._successCallbacks = [];
+            this._errorCallbacks = [];
+        }
+
+        function resolvePromise(func,context,queue,promise){
+            queue.push(function() {
+                var res = func.apply(context, arguments);
+                if (res && typeof res.then === "function")
+                    res.then(promise.done, promise);
+            });
         }
 
         Promise.prototype.then = function(func, context) {
@@ -128,72 +143,88 @@
                 p = func.apply(context, this.result);
             } else {
                 p = new Promise();
-                this._callbacks.push(function() {
-                    var res = func.apply(context, arguments);
-                    if (res && typeof res.then === "function")
-                        res.then(p.done, p);
-                });
+                resolvePromise(func,context,this._successCallbacks,p);
             }
             return p;
         };
 
-        Promise.prototype.done = function() {
+        Promise.prototype.catch = function(func, context) {
+            var p;
+            if (this._isdone&&this._isfailure) {
+                p = func.apply(context, this.result);
+            } else {
+                p = new Promise();
+                resolvePromise(func,context,this._errorCallbacks,p);
+            }
+            return p;
+        };
+
+        Promise.prototype.resolve = function() {
             this.result = arguments;
             this._isdone = true;
-            for (var i = 0; i < this._callbacks.length; i++) {
-                this._callbacks[i].apply(null, arguments);
+            this._issuccess = true;
+            for (var i = 0; i < this._successCallbacks.length; i++) {
+                this._successCallbacks[i].apply(null, arguments);
             }
-            this._callbacks = [];
+            this._successCallbacks = [];
         };
 
-        function join(promises) {
-            var p = new Promise();
-            var results = [];
-
-            if (!promises || !promises.length) {
-                p.done(results);
-                return p;
+        Promise.prototype.reject = function() {
+            this.result = arguments;
+            this._isdone = true;
+            this._isfailure = true;
+            for (var i = 0; i < this._errorCallbacks.length; i++) {
+                this._errorCallbacks[i].apply(null, arguments);
             }
+            this._errorCallbacks = [];
+        };
 
-            var numdone = 0;
-            var total = promises.length;
+        // function join(promises) {
+        //     var p = new Promise();
+        //     var results = [];
 
-            function notifier(i) {
-                return function() {
-                    numdone += 1;
-                    results[i] = Array.prototype.slice.call(arguments);
-                    if (numdone === total) {
-                        p.done(results);
-                    }
-                };
-            }
+        //     if (!promises || !promises.length) {
+        //         p.done(results);
+        //         return p;
+        //     }
 
-            for (var i = 0; i < total; i++) {
-                promises[i].then(notifier(i));
-            }
+        //     var numdone = 0;
+        //     var total = promises.length;
 
-            return p;
-        }
+        //     function notifier(i) {
+        //         return function() {
+        //             numdone += 1;
+        //             results[i] = Array.prototype.slice.call(arguments);
+        //             if (numdone === total) {
+        //                 p.done(results);
+        //             }
+        //         };
+        //     }
 
-        function chain(funcs, args) {
-            var p = new Promise();
-            if (funcs.length === 0) {
-                p.done.apply(p, args);
-            } else {
-                funcs[0].apply(null, args).then(function() {
-                    funcs.splice(0, 1);
-                    chain(funcs, arguments).then(function() {
-                        p.done.apply(p, arguments);
-                    });
-                });
-            }
-            return p;
-        }
+        //     for (var i = 0; i < total; i++) {
+        //         promises[i].then(notifier(i));
+        //     }
+
+        //     return p;
+        // }
+
+        // function chain(funcs, args) {
+        //     var p = new Promise();
+        //     if (funcs.length === 0) {
+        //         p.done.apply(p, args);
+        //     } else {
+        //         funcs[0].apply(null, args).then(function() {
+        //             funcs.splice(0, 1);
+        //             chain(funcs, arguments).then(function() {
+        //                 p.done.apply(p, arguments);
+        //             });
+        //         });
+        //     }
+        //     return p;
+        // }
 
         var promise = {
-            Promise: Promise,
-            join: join,
-            chain: chain
+            Promise: Promise
         };
 
         veronica.promise = promise;
@@ -239,7 +270,7 @@
             try {
                 xhr = new_xhr();
             } catch (e) {
-                p.done(veronicaAjax.ENOXHR, "");
+                p.reject(veronicaAjax.ENOXHR);
                 return p;
             }
 
@@ -250,11 +281,10 @@
             }
 
             xhr.open(method, url);
-            if(method==="POST"){
+            if (method === "POST") {
                 xhr.setRequestHeader("Content-type", "application/json");
-            }
-            else{
-                xhr.setRequestHeader("Content-type", "*/*");    
+            } else {
+                xhr.setRequestHeader("Content-type", "*/*");
             }
             for (var h in headers) {
                 if (headers.hasOwnProperty(h)) {
@@ -264,7 +294,7 @@
 
             function onTimeout() {
                 xhr.abort();
-                p.done(veronicaAjax.ETIMEOUT, "", xhr);
+                p.reject(veronicaAjax.ETIMEOUT, "", xhr);
             }
 
             var timeout = veronicaAjax.ajaxTimeout;
@@ -280,7 +310,13 @@
                     var err = (!xhr.status ||
                         (xhr.status < 200 || xhr.status >= 300) &&
                         xhr.status !== 304);
-                    p.done(err, xhr.responseText, xhr);
+                    if(err){
+                        p.reject(err);
+                    }
+                    else{
+                        p.resolve(xhr.responseText, xhr);
+                    }
+
                 }
             };
 
@@ -316,9 +352,9 @@
             ajaxTimeout: 0
         };
 
-        veronica.ajax = veronicaAjax.ajax;
-        veronica.get = veronicaAjax.get;
-        veronica.post = veronicaAjax.post;
+        $.ajax = veronicaAjax.ajax;
+        $.get = veronicaAjax.get;
+        $.post = veronicaAjax.post;
 
     })(veronica);
     /* Persistance===============*/
@@ -371,11 +407,10 @@
             return localStorage[key] || DsData[key];
         }
 
-        function removeData(key){
-            if(localStorage){
+        function removeData(key) {
+            if (localStorage) {
                 localStorage.removeItem(key);
-            }
-            else{
+            } else {
                 delete DsData[key];
             }
         }
@@ -383,7 +418,7 @@
         veronica.DS = {
             set: setDsData,
             get: getDsData,
-            removeData:removeData
+            removeData: removeData
         };
 
     })(framework, veronica);
@@ -396,8 +431,8 @@
             while (node && parentCount < 4) {
                 if (node.tagName === "A") {
                     e.preventDefault();
-                    var pageEnterEffect = "mounting-left";
-                    var pageLeaveEffect = "unmount-left";
+                    var pageEnterEffect = "mounting";
+                    var pageLeaveEffect = "unmount";
                     if (!!node.getAttribute("data-pageentereffect")) {
                         pageEnterEffect = node.getAttribute("data-pageentereffect").trim();
                     }
@@ -424,21 +459,21 @@
             var locPromise = window.$q();
             var options = {
                 enableHighAccuracy: false,
-                  timeout: 1500,
-                  maximumAge: 900000
+                timeout: 1500,
+                maximumAge: 900000
             };
 
             var successLocation = function(data) {
-                locPromise.done(null, data);
+                locPromise.resolve(data);
             };
 
             var failure = function(error) {
                 if (error.code === error.PERMISSION_DENIED) {
                     sensorStatus.GPS = "BLOCKED";
-                    locPromise.done("LOCATION_BLOCKED");
+                    locPromise.reject("LOCATION_BLOCKED");
                 } else {
                     sensorStatus.GPS = "N/A";
-                    locPromise.done("LOCATION_ERROR");
+                    locPromise.reject("LOCATION_ERROR");
                 }
 
             };
@@ -448,7 +483,7 @@
                 navigator.geolocation.getCurrentPosition(successLocation, failure, options);
             } else {
                 sensorStatus.GPS = "N/A";
-                locPromise.done("LOCATION_NOT_AVAILABLE");
+                locPromise.reject("LOCATION_NOT_AVAILABLE");
             }
             return locPromise;
         }
@@ -502,7 +537,6 @@
                 if (currState.name === "") {
                     loc(getCurrentPath());
                 }
-
             } else {
                 throw new Error("Route object should contain a URL regex and a component name");
             }
@@ -521,12 +555,13 @@
                             if (core.applicationStatus.currentState.name === "") {
                                 history.replaceState(route, "", newRoute);
                             } else {
+                                route.prevPage=currRoute;
                                 history.pushState(route, "", newRoute);
                                 veronica.isPageFromPush = true;
                             }
                             veronica.eventBus.trigger("veronica:stateChange", route);
-                            var pageEnterEffect = "mounting-left";
-                            var pageLeaveEffect = "unmount-left";
+                            var pageEnterEffect = "mounting";
+                            var pageLeaveEffect = "unmount";
                             if (arguments[1] && typeof(arguments[1]) == "string") {
                                 pageEnterEffect = arguments[1];
                             }
@@ -551,7 +586,7 @@
                 if (core.applicationStatus.currentState.state.state !== e.state.state) {
                     veronica.eventBus.trigger("veronica:stateChange", e.state);
                 }
-                evalRoute(e.state, "mounting-right", "unmount-right");
+                evalRoute(e.state, "mounting-pop", "unmount-pop");
             }
         };
 
@@ -584,8 +619,8 @@
         }
 
         function mountNewPage(pageEnterEffect, pageLeaveEffect) {
-            pageEnterEffect = pageEnterEffect || "mounting-left";
-            pageLeaveEffect = pageLeaveEffect || "unmount-left";
+            pageEnterEffect = pageEnterEffect || "mounting";
+            pageLeaveEffect = pageLeaveEffect || "unmount";
 
             if (core.applicationStatus.viewTag) {
                 //if there is already something in current page
@@ -623,6 +658,7 @@
                         elem.classList.add(pageEnterEffect);
                         core.applicationStatus.pageTag.classList.add(pageLeaveEffect);
                         core.applicationStatus.viewTag.appendChild(elem);
+
                     } else {
                         var newComponent = core.applicationStatus.currentComponent.tagName.toLowerCase();
                         var newTag = "<div class='page " + newComponent + "'>" + "<" + newComponent + "></" + newComponent + ">" + "</div>";
@@ -646,10 +682,21 @@
             core.applicationStatus.pageTag = newPage;
         }
 
+        function getPrevPageUrl(){
+            if(history.state){
+                return history.state.prevPage||null;
+            }
+            else{
+                return null;
+            }
+            
+        }
+
         var router = {
             createRoute: createRoute,
             getCurrentPath: getCurrentPath,
             addRoute: addRoute,
+            getPrevPageUrl: getPrevPageUrl,
             loc: loc
         };
 
@@ -659,7 +706,6 @@
     })(framework, veronica);
 
     /* Init===============*/
-    window.$ = new framework.Core().selector;
     window.$q = function() {
         return new veronica.promise.Promise();
     };
@@ -694,10 +740,12 @@
 
 
     function init() {
+
         var $ = window.$;
         var core = new framework.Core();
         core.applicationStatus.viewTag = $(veronica.settings.viewTag)[0];
         core.applicationStatus.viewTag.innerHTML = "<div class='page'></div>";
+
         core.applicationStatus.pageTag = core.applicationStatus.viewTag.querySelector(".page");
 
         if (!testAnimationCapability()) {
@@ -707,8 +755,9 @@
         if (core.applicationStatus.routes.length > 0) {
             veronica.loc(veronica.getCurrentPath());
         } else {
-            window.dispatchEvent(new Event("veronicaInit"));
+            window.dispatchEvent(new Event("veronica:init"));
             riot.mount("*", {});
+            riot.doneLoadingTags();
         }
 
         document.addEventListener("click", framework.utils.handleAnchorClick);
@@ -720,6 +769,8 @@
     veronica.loc = framework.router.loc;
 
     document.onreadystatechange = function() {
-        init();
+        if (document.readyState == "interactive") {
+            init();
+        }
     };
 })(window, riot);

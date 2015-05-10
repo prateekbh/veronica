@@ -20,6 +20,7 @@ hp-header {
     position: relative;
     top: 0px;
     transform: translateZ(0px);
+    z-index: 2;
 }
 
 hp-header.stickyHeader {
@@ -122,4 +123,15 @@ hp-instacard .desc{
 
 hp-instacard .img{
     text-align: center;
+}
+
+
+.unmount, .unmount-pop{
+    transition-duration:300ms;
+    opacity: 0;
+}
+
+.mount, .mount-pop{
+    transition-duration:300ms;
+    opacity: 1;
 }
