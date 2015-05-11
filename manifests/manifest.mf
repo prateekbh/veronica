@@ -1,0 +1,13 @@
+CACHE MANIFEST
+# rev 1 - 2015-05-11T14:49:55.674Z
+
+CACHE:
+/
+/public/tags/compiled_tags.html
+/public/javascripts/compiled_js.js
+/public/css/quick_styles.css
+/public/images/food.jpg
+/public/images/quick_logo.png
+
+NETWORK:
+*
