@@ -1,0 +1,7 @@
+/node_modules
+/.sass-cache
+public/css/*
+public/tags/*
+public/javascripts/*
+.idea/*
+fquick-plus.iml

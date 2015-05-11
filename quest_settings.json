@@ -1,0 +1,10 @@
+{
+    "quest":{
+        "tagFolder":"tags",
+        "compiledTagFile": "./public/tags/compiled_tags.html",
+        "routeFile": "/routes/routes.json",
+        "riotFilePath":"./js_core/riot.js",
+        "questFilePath":"./js_core/veronica.js",
+        "compiledStackFile":"./public/javascripts/compiled_js.js"
+    }
+}
