@@ -480,9 +480,6 @@
                     route.url="\/$";
                 }
                 appStatus.routes.push(route);
-                if (currState.name === "") {
-                    loc(getCurrentPath());
-                }
             } else {
                 throw new Error("Route object should contain a URL regex and a component name");
             }
@@ -700,8 +697,6 @@
 
     function init() {
 
-        var $ = window.$;
-
         globals.applicationStatus.viewTag = $(veronica.settings.viewTag)[0];
         globals.applicationStatus.viewTag.innerHTML = "<div class='page'></div>";
 
@@ -716,11 +711,13 @@
             $("body")[0].classList.add("noanim");
         }
 
-        if (globals.applicationStatus.routes.length > 0) {
-            veronica.loc(veronica.getCurrentPath());
-        } else {
-            window.dispatchEvent(new Event("veronica:init"));
-            riot.mount("*", {});
+        //mount riot
+        riot.mount("*", {});
+
+        //mount initial page
+        if(globals.applicationStatus.routes.length>0){
+            veronica.loc(location.pathname);
+            veronica.eventBus.trigger("veronica:init");
         }
 
         document.addEventListener("click", framework.utils.handleAnchorClick);
