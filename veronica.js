@@ -390,6 +390,16 @@
 
             }
         };
+
+        //initializing utils namespace
+        veronica.utils=veronica.utils||{};
+
+        //createEvent wrapper for older browser support
+        veronica.utils.createEvent=function(e){
+            var ev=document.createEvent("CustomEvent");
+            ev.initEvent(e);
+            return ev;
+        };
     })(framework);
     /* Sensors Provider===============*/
     (function(veronica) {
@@ -584,24 +594,24 @@
                     appStatus.pageTag.addEventListener("webkitTransitionEnd", function() {
                         animEndCallback(this, elem);
                         shownEventFired = true;
-                        appStatus.currentComponent.dispatchEvent(new Event("shown"));
+                        appStatus.currentComponent.dispatchEvent(veronica.utils.createEvent("shown"));
                     });
 
                     appStatus.pageTag.addEventListener("oTransitionEnd", function() {
                         animEndCallback(this, elem);
                         shownEventFired = true;
-                        appStatus.currentComponent.dispatchEvent(new Event("shown"));
+                        appStatus.currentComponent.dispatchEvent(veronica.utils.createEvent("shown"));
                     });
 
                     appStatus.pageTag.addEventListener("transitionend", function() {
                         animEndCallback(this, elem);
                         shownEventFired = true;
-                        appStatus.currentComponent.dispatchEvent(new Event("shown"));
+                        appStatus.currentComponent.dispatchEvent(veronica.utils.createEvent("shown"));
                     });
 
                     setTimeout(function() {
                         if (!shownEventFired) {
-                            appStatus.currentComponent.dispatchEvent(new Event("shown"));
+                            appStatus.currentComponent.dispatchEvent(veronica.utils.createEvent("shown"));
                         }
                     }, veronica.settings.maxPageTransitionTime);
 
