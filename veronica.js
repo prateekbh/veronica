@@ -4,7 +4,7 @@
     "use strict";
 
     var veronica = {
-        version: "v0.0.2",
+        version: "v0.0.5",
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 500
@@ -483,7 +483,6 @@
         }
 
         function addRoute(route) {
-            var currState = appStatus.currentState;
             if (route && route.url && route.component) {
                 //handle special case of home in which case giving / for route is much more intuitive.
                 if(route.url==="/"){
