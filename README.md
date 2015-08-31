@@ -14,17 +14,21 @@ Following are the APIs for Veronica
 Veronica gives $ selector at window scope which returns an array of HTMLElements, that can be itterated through to perform operations on these elements
 
 e.g.
+```
 var h3s=$("h3");
+````
 
 # Veronica Event Bus
 Veronica event bus is a bus for facilitating pubsub in the framework.
 "veronica.eventBus" is the singleton object defined for the same.
 
 Usage: 
+```
 veronica.eventBus.on("eventname",callback)
 veronica.eventBus.off("eventname",callback)
 veronica.eventBus.once("eventname",callback)
 veronica.eventBus.trigger("eventname",{data})
+```
 
 # Veronica Promises
 The promises object gives u a way to create $q promises the new new constructer.
@@ -42,5 +46,5 @@ Veronica comes with a full URL support router that not only saves your hash link
 
 # Roadmap to 1.0
 Our roadmap to a 1.0 version currently includes introding the following stuff in the framework
-a.) Flux architecture
-b.) A good amount of test coverage
+- Flux architecture
+- A good amount of test coverage
