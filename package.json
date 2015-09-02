@@ -1,0 +1,22 @@
+{
+  "name": "veronica",
+  "version": "0.0.1",
+  "author": "Prateek Bhatnagar <prateek89born@gmail.com>",
+  "private": false,
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:prateekbh/veronica.git"
+  },
+  "dependencies": {
+    "riot": "^2.2.4"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-uglify": "^0.9.1",
+    "load-grunt-tasks": "^3.1.0"
+  }
+}
