@@ -9,6 +9,8 @@
         }
     };
 
+    var gems={};
+
     var semiQualifiedBrowsers = [
         "UCBrowser",
         "Opera Mini"

@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "author": "Prateek Bhatnagar <prateek89born@gmail.com>",
   "private": false,
-  "scripts": {},
+  "scripts": {
+     "build": "grunt build",
+     "test": "grunt test",
+     "all": "grunt"
+    },
   "repository": {
     "type": "git",
     "url": "git@github.com:prateekbh/veronica.git"
