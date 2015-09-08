@@ -14,7 +14,9 @@ This name pace is the store Actions and Stores.
 Actions and Stores have functions createActions/createStores and getAction/getStore which help you create/get instances of both.
 
 ### Veronica Actions
-Creation of Actions
+Actions in veronica/flux are meant to perform jobs, api calls, perform async functions etc. and send the processed data to the '[./lib/dispatcher.js](Dispatcher)'
+
+Creating an Action
 ```
  function ItemActions(){
  	this.addItem(item){
@@ -37,7 +39,7 @@ Ajax Usage in actions
 	function ItemActions(){
 		this.fetchItemDetails(itemid){
 			//this.http object exposes get/post/delete/put methods
-			this.http.get("url?id="+itemid).success(function(res){
+			this.http.get(url+"?id="+itemid).success(function(res){
 				this.Dispatcher.trigger("item:detail",{data:res});
 			})
 		}
@@ -46,15 +48,55 @@ Ajax Usage in actions
 
 P.S. Only Actions can/should perform Ajax in veronica
 
-### Veronica Sizzle
-Veronica gives $ selector at window scope which returns an array of HTMLElements, that can be itterated through to perform operations on these elements
+### Veronica Stores
+Stores in veronica/flux are the data stores that expose data getters and have the capability to listen to events on '[./lib/dispatcher.js](Dispatcher)'.
 
-e.g.
+Creating a Store
 ```
-var h3s=$("h3");
-````
+function ItemStores(){
+	var _shoppingList=[];
 
-### Veronica Event Bus
+	this.Dispatcher.on("item:action",addItemToList);
+
+	this.getItems=function(){
+		return _shoppingList;
+	}
+
+	this.addItemToList=function(data){
+		_shoppingList.push(data.item);
+	}
+
+	this.removeAddItemListener=function(data){
+		this.Dispatcher.off("item:action",addItemToList);	//removing a listener
+	}
+}
+
+ veronica.flux.Stores.createStore(ItemStores);	//creating an store
+
+ //accessing inside a view
+ var itemStoreObj=veronica.flux.Stores.getStore("ItemStores");	//this will be a sigle
+this.items=itemStoreObj.getItems();
+```
+
+### Veronica Dispatcher
+Actions and Stores in veronica have access to different access to specific APIs of Dispatcher so as to maintain the unidirectional flow of data.
+
+Dispatcher has following 4 APIs
+```
+//only present in Stores
+this.Dispatcher.on("eventname",callback)
+this.Dispatcher.off("eventname",callback)
+this.Dispatcher.once("eventname",callback)
+
+//only present in Actions
+this.Dispatcher.trigger("eventname",{data})
+```
+
+### every thing that follows does not hold any significance now
+
+### Veronica Router
+
+
 Veronica event bus is a bus for facilitating pubsub in the framework.
 "veronica.eventBus" is the singleton object defined for the same.
 
