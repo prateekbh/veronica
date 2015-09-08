@@ -9,7 +9,9 @@
         }
     };
 
-    var gems={};
+    var gems={
+        flux:{}
+    };
 
     var semiQualifiedBrowsers = [
         "UCBrowser",
@@ -17,6 +19,5 @@
     ];
 
     var globals = {
-        BROWSER_SUPPORT : "A", //A for full support, B for semi support
-        applicationStatus:{}
+        BROWSER_SUPPORT : "A" //A for full support, B for semi support
     };

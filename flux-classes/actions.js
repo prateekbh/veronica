@@ -3,18 +3,36 @@ Author : Prateek Bhatnagar
 Data : 4th-Sept-2015
 Description : This is the base class 
 =============================*/
-;
-(function(veronica, http, Dispatcher, promise) {
+;(function(veronica, http, Dispatcher, promise) {
+    var actions={};
+    gems.flux.Actions={};
+
     function Action() {
         this.Dispatcher = {
             trigger: Dispatcher.trigger
         };
-        this.http = http;
-        this.promise = promise;
+        this.Ajax = http;
+        this.Promise = promise;
     }
 
-    veronica.Flux.createAction=function(childClass){
-        
+    gems.flux.Actions.createAction=function(childClass){
+        try{
+            actions[childClass.name]=gems.extender(Action,childClass);    
+            return true;
+        }
+        catch(e){
+            return false;
+        }
+    }
+
+    gems.flux.Actions.getActions=function(name){
+        var klass=actions[name];
+        if(klass){
+            return new klass();    
+        }
+        else{
+            return null;
+        }
     }
 
 })(veronica,gems.http, gems.Dispatcher, gems.promise);

@@ -1380,7 +1380,9 @@ riot.mountTo = riot.mount
         }
     };
 
-    var gems={};
+    var gems={
+        flux:{}
+    };
 
     var semiQualifiedBrowsers = [
         "UCBrowser",
@@ -1388,15 +1390,102 @@ riot.mountTo = riot.mount
     ];
 
     var globals = {
-        BROWSER_SUPPORT : "A", //A for full support, B for semi support
-        applicationStatus:{}
+        BROWSER_SUPPORT : "A" //A for full support, B for semi support
     };
+/*============================
+Author : Prateek Bhatnagar
+Data : 7th-Sept-2015
+Description : This facilitates the capability detection and suppliment for the framework
+=============================*/
+
+;
+(function(gems) {
+    function testAnimationCapability() {
+        var animation = false,
+            animationstring = "animation",
+            keyframeprefix = "",
+            domPrefixes = "Webkit Moz O ms Khtml".split(" "),
+            pfx = "",
+            elm = $("body")[0];
+
+        if (elm.style.animationName !== undefined) {
+            animation = true;
+        }
+
+        if (animation === false) {
+            for (var i = 0; i < domPrefixes.length; i++) {
+                if (elm.style[domPrefixes[i] + "AnimationName"] !== undefined) {
+                    pfx = domPrefixes[i];
+                    animationstring = pfx + "Animation";
+                    keyframeprefix = "-" + pfx.toLowerCase() + "-";
+                    animation = true;
+                    break;
+                }
+            }
+        }
+
+        return animation;
+    }
+
+    function isBrowserSemiSupported() {
+        for (var uaIndex = 0; uaIndex < semiQualifiedBrowsers; uaIndex++) {
+            var currUA = semiQualifiedBrowsers[uaIndex];
+            if (navigator.userAgent.indexOf(currUA) !== -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function handleClick(e) {
+        var node = e.target;
+        var parentCount = 0;
+        while (node && parentCount < 4) {
+            if (node.tagName === "A") {
+                e.preventDefault();
+                var pageEnterEffect = "mounting";
+                var pageLeaveEffect = "unmount";
+                if (!!node.getAttribute("data-pageentereffect")) {
+                    pageEnterEffect = node.getAttribute("data-pageentereffect").trim();
+                }
+                if (!!node.getAttribute("data-pageleaveeffect")) {
+                    pageLeaveEffect = node.getAttribute("data-pageleaveeffect").trim();
+                }
+                veronica.loc(node.getAttribute("href"), pageEnterEffect, pageLeaveEffect);
+                break;
+            } else {
+                node = node.parentNode;
+                parentCount = parentCount + 1;
+            }
+
+        }
+    }
+
+    function createEvent(e) {
+        var ev = document.createEvent("CustomEvent");
+        ev.initEvent(e);
+        return ev;
+    };
+
+    gems.capabilities = {
+        testAnimationCapability: testAnimationCapability,
+        isBrowserSemiSupported: isBrowserSemiSupported,
+        handleClick: handleClick,
+        createEvent:createEvent
+    };
+})(gems)
+
+/*============================
+Author : Prateek Bhatnagar
+Data : 7th-Sept-2015
+Description : This facilitates a mock sizzle selector
+=============================*/
 ;(function(window) {
     window.$ = function(tag, root) {
         return document.querySelectorAll(tag, root);
     };
 })(window);
-(function(veronica) {
+(function(gems) {
 
         var PB = function() {
             var _self = this,
@@ -1471,9 +1560,9 @@ riot.mountTo = riot.mount
 
         };
 
-        veronica.Dispatcher = new PB();
+        gems.Dispatcher = new PB();
 
-    })(veronica);
+    })(gems);
 /* Promises ===============*/
 (function(gems) {
     function Promise() {
@@ -1665,7 +1754,359 @@ riot.mountTo = riot.mount
     gems.http.get = veronicaAjax.get;
     gems.http.post = veronicaAjax.post;
     gems.http.put = veronicaAjax.put;
-    gems.http.delete = veronicaAjax.delete;
+    gems.http.delete = veronicaAjax.del;
 
 })(gems);
+/* Persistance===============*/
+(function(gems) {
+    var componentDataStore = {};
+
+    gems.Storage={};
+
+    /* Session */
+    var sessionData = [];
+
+    function setSessionData(key, obj) {
+        if (sessionStorage) {
+            sessionStorage[key] = obj;
+        } else {
+            sessionData[key] = obj;
+        }
+    }
+
+    function getSessionData(key) {
+        return sessionStorage[key] || sessionData[key];
+    }
+
+    gems.Storage.Session = {
+        set: setSessionData,
+        get: getSessionData
+    };
+
+
+    /* DS */
+    var DsData = [];
+
+    function setDsData(key, obj) {
+        if (localStorage) {
+            localStorage[key] = obj;
+        } else {
+            DsData[key] = obj;
+        }
+    }
+
+    function getDsData(key) {
+        return localStorage[key] || DsData[key];
+    }
+
+    function removeData(key) {
+        if (localStorage) {
+            localStorage.removeItem(key);
+        } else {
+            delete DsData[key];
+        }
+    }
+
+    gems.Storage.DS = {
+        set: setDsData,
+        get: getDsData,
+        removeData: removeData
+    };
+
+})(gems);
+/* Utils===============*/
+/*============================
+Author : Prateek Bhatnagar
+Data : 6th-Sept-2015
+Description : This is the lib for extending base store/action to user provided actions and stores
+=============================*/
+;(function(gems){
+    var extend = function ( base, child ) {
+        child.prototype=new base();
+        return child;
+    };
+
+    gems.extender=extend;
+})(gems);
+
+/*============================
+Author : Prateek Bhatnagar
+Data : 7th-Sept-2015
+Description : This facilitates the router of the framework
+=============================*/
+;
+(function(gems, veronica) {
+    var appStatus = {}
+
+    appStatus.viewTag = $(veronica.settings.viewTag)[0];
+    if (appStatus.viewTag) {
+        appStatus.viewTag.innerHTML = "<div class='page'></div>";
+        appStatus.pageTag = appStatus.viewTag.querySelector(".page");
+    }
+    else{
+    	appStatus.pageTag=null;
+    }
+
+    appStatus.routes = [];
+
+    appStatus.currentState = {
+        name: "",
+        state: {}
+    };
+
+    appStatus.currentComponent = null;
+
+    function createRoute(stateName, urlRegex, componentToMount, preserveDateOnUnmount) {
+        return {
+            url: urlRegex,
+            state: stateName,
+            component: componentToMount,
+            preserveDateOnUnmount: preserveDateOnUnmount || false
+        };
+    }
+
+    function getCurrentPath() {
+        var route = location.pathname.split("#")[0];
+        if (typeof route === "string") {
+            return route;
+        } else if (route.length > 0) {
+            return route[0];
+        } else {
+            throw new Error("Unable to process route");
+        }
+    }
+
+    function addRoute(route) {
+        if (route && route.url && route.component) {
+            //handle special case of home in which case giving / for route is much more intuitive.
+            if (route.url === "/") {
+                route.url = "\/$";
+            }
+            appStatus.routes.push(route);
+        } else {
+            throw new Error("Route object should contain a URL regex and a component name");
+        }
+    }
+
+    function loc() {
+        if (arguments.length === 0) {
+            return appStatus.currentState;
+        } else if (arguments.length > 0 && typeof(arguments[0]) == "string") {
+            var newRoute = arguments[0];
+            var currRoute = getCurrentPath();
+            if (history && history.pushState) {
+                var urlFound = false;
+                for (var r in appStatus.routes) {
+                    var route = appStatus.routes[r];
+
+                    //check if route matches and is not the current route
+                    if (newRoute.match(route.url) && (appStatus.currentState.name !== route.state)) {
+                        if (appStatus.currentState.name === "") {
+                            history.replaceState(route, "", newRoute);
+                        } else {
+                            route.prevPage = currRoute;
+                            history.pushState(route, "", newRoute);
+                        }
+                        veronica.eventBus.trigger("veronica:stateChange", route);
+                        var pageEnterEffect = "mounting";
+                        var pageLeaveEffect = "unmount";
+                        if (arguments[1] && typeof(arguments[1]) == "string") {
+                            pageEnterEffect = arguments[1];
+                        }
+                        if (arguments[2] && typeof(arguments[2]) == "string") {
+                            pageLeaveEffect = arguments[2];
+                        }
+                        evalRoute(route, pageEnterEffect, pageLeaveEffect);
+                        urlFound = true;
+                        break;
+                    }
+                }
+                //current web app does not have this route so send this request to Server
+                if (!urlFound) {
+                    location.href = newRoute;
+                }
+            } else {
+                if (newRoute !== currRoute) {
+                    location.href = newRoute;
+                }
+            }
+        }
+    }
+
+    window.onpopstate = function(e) {
+        // if(e) because veronica shouldn't intrupt the #changes
+        if (e && e.state) {
+            if (appStatus.currentState.state.state !== e.state.state) {
+                veronica.eventBus.trigger("veronica:stateChange", e.state);
+            }
+            evalRoute(e.state, "mounting-pop", "unmount-pop");
+        }
+    };
+
+    function evalRoute(stateObj, pageEnterEffect, pageLeaveEffect) {
+        // declare components and states
+        if (stateObj === null) {
+            return;
+        }
+
+        var componentName = stateObj.component;
+        var prevState = appStatus.currentState;
+        var preserveComponentData = false;
+
+        //check if data of this component is to be preserved
+        if (prevState && prevState.state && prevState.state.preserveDateOnUnmount) {
+            preserveComponentData = prevState.state.preserveDateOnUnmount;
+        }
+
+        //initialize current state and component
+        appStatus.currentState.name = stateObj.state;
+        appStatus.currentState.state = stateObj;
+        appStatus.currentComponent = document.createElement(componentName);
+
+
+        mountNewPage(pageEnterEffect, pageLeaveEffect);
+
+        riot.mount(componentName, {});
+    }
+
+    function mountNewPage(pageEnterEffect, pageLeaveEffect) {
+        pageEnterEffect = pageEnterEffect || "mounting";
+        pageLeaveEffect = pageLeaveEffect || "unmount";
+
+        if (appStatus.viewTag) {
+            //if there is already something in current page
+            if (appStatus.pageTag.children.length > 0) {
+                var elem = document.createElement("div");
+                var shownEventFired = false;
+                elem.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
+                elem.appendChild(appStatus.currentComponent);
+
+                appStatus.pageTag.addEventListener("webkitTransitionEnd", function() {
+                    animEndCallback(this, elem);
+                    shownEventFired = true;
+                    appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
+                });
+
+                appStatus.pageTag.addEventListener("oTransitionEnd", function() {
+                    animEndCallback(this, elem);
+                    shownEventFired = true;
+                    appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
+                });
+
+                appStatus.pageTag.addEventListener("transitionend", function() {
+                    animEndCallback(this, elem);
+                    shownEventFired = true;
+                    appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
+                });
+
+                setTimeout(function() {
+                    if (!shownEventFired) {
+                        appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
+                    }
+                }, veronica.settings.maxPageTransitionTime);
+
+                if (globals.BROWSER_SUPPORT === "A") {
+                    elem.classList.add(pageEnterEffect);
+                    appStatus.pageTag.classList.add(pageLeaveEffect);
+                    appStatus.viewTag.appendChild(elem);
+
+                } else {
+                    var newComponent = appStatus.currentComponent.tagName.toLowerCase();
+                    var newTag = "<div class='page " + newComponent + "'>" + "<" + newComponent + "></" + newComponent + ">" + "</div>";
+                    appStatus.pageTag.innerHTML = newTag;
+                }
+
+
+
+            } else {
+                //if this is the first time a page is being mounted
+                appStatus.pageTag.classList.add(appStatus.currentComponent.tagName.toLowerCase());
+                appStatus.pageTag.appendChild(appStatus.currentComponent);
+            }
+        }
+    }
+
+    function animEndCallback(currElem, newPage) {
+        currElem.className = "hidden";
+        currElem.remove();
+        newPage.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
+        appStatus.pageTag = newPage;
+    }
+
+    function getPrevPageUrl() {
+        if (history.state) {
+            return history.state.prevPage || null;
+        } else {
+            return null;
+        }
+
+    }
+
+    veronica.createRoute = createRoute;
+    veronica.getCurrentPath = getCurrentPath;
+    veronica.getPrevPageUrl = getPrevPageUrl;
+    veronica.addRoute = addRoute;
+    veronica.loc = loc;
+    gems.totalRouteLength = appStatus.routes.length;
+
+})(gems, veronica);
+
+/*============================
+Author : Prateek Bhatnagar
+Data : 4th-Sept-2015
+Description : This is the base class 
+=============================*/
+;(function(veronica, http, Dispatcher, promise) {
+    var actions={};
+    gems.flux.Actions={};
+
+    function Action() {
+        this.Dispatcher = {
+            trigger: Dispatcher.trigger
+        };
+        this.Ajax = http;
+        this.Promise = promise;
+    }
+
+    gems.flux.Actions.createAction=function(childClass){
+        try{
+            actions[childClass.name]=gems.extender(Action,childClass);    
+            return true;
+        }
+        catch(e){
+            return false;
+        }
+    }
+
+    gems.flux.Actions.getActions=function(name){
+        var klass=actions[name];
+        return new klass();
+    }
+
+})(veronica,gems.http, gems.Dispatcher, gems.promise);
+
+/*============================
+Author : Prateek Bhatnagar
+Data : 6th-Sept-2015
+Description : This is the base class for stores
+=============================*/
+;(function(veronica, http, Dispatcher, promise) {
+    function Store() {
+        this.Dispatcher = {
+        	on: Dispatcher.trigger,
+        	off: Dispatcher.trigger,
+        	once: Dispatcher.trigger
+        };
+        this.Storage = gems.Storage;
+    }
+
+    gems.flux.createStore=function(childClass){
+        
+    }
+
+})(veronica,gems.http, gems.Dispatcher);
+
+    veronica.flux = gems.flux;
+    window.veronica = veronica;
+
 })(window, riot);
