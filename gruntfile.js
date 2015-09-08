@@ -8,11 +8,16 @@ var compiledMinFile = "./veronica_compiled.min.js";
 var jsFiles = [
     "./node_modules/riot/riot.js",
     "./wrap/prefix.js",
+    "./lib/capabilities.js",
     "./lib/sizzle.js",
     "./lib/dispatcher.js",
     "./lib/promises.js",
     "./lib/ajax.js",
     "./lib/storage.js",
+    "./lib/extend.js",
+    "./lib/router.js",
+    "./flux-classes/actions.js",
+    "./flux-classes/stores.js",
     "./wrap/suffix.js"
 ];
 
