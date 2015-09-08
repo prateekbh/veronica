@@ -1,2 +1,46 @@
+<!DOCTYPE html>
 <html>
+<head>
+	<title></title>
+	<style>
+		.unmount,.unmount-pop{display:none;}
+	</style>
+</head>
+<body onload="onload()">
+
+	<div class="app-body">
+		
+	</div>
+	
+	
+	<script type="riot/tag" src="./tags/tags.tag"></script>
+	<script type="text/javascript" src="../veronica_compiled.js"></script>
+	<script>
+		veronica.addRoute(
+			veronica.createRoute("list","/list","demo-list",true));
+		veronica.addRoute(
+			veronica.createRoute("home","/demo","demo-intro",true));
+		function onload(){
+
+			//stores and actions
+			function ListStore(){
+				var _list=[];
+
+				this.Dispatcher.on("item:added",function(data){
+					_list.push(data.data);
+				});
+				this.getItems=function(){
+					return _list;
+				}
+			};
+			veronica.flux.Stores.createStore(ListStore);
+			function ItemsActions(){
+				this.addItem=function(item){
+					this.Dispatcher.trigger("item:added",{data:item});
+				}
+			};
+			veronica.flux.Actions.createAction(ItemsActions);
+		}
+	</script>
+</body>
 </html>

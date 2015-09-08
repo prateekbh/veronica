@@ -6,7 +6,7 @@ var compiledFile = "./veronica_compiled.js";
 var compiledMinFile = "./veronica_compiled.min.js";
 
 var jsFiles = [
-    "./node_modules/riot/riot.js",
+    "./node_modules/riot/riot+compiler.js",
     "./wrap/prefix.js",
     "./lib/capabilities.js",
     "./lib/sizzle.js",
@@ -18,6 +18,7 @@ var jsFiles = [
     "./lib/router.js",
     "./flux-classes/actions.js",
     "./flux-classes/stores.js",
+    "./lib/init.js",
     "./wrap/suffix.js"
 ];
 

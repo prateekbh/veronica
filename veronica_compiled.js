@@ -1354,6 +1354,376 @@ riot.update = function() {
 
 // @deprecated
 riot.mountTo = riot.mount
+/* istanbul ignore next */
+var parsers = {
+  html: {},
+  css: {},
+  js: {
+    coffee: function(js) {
+      return CoffeeScript.compile(js, { bare: true })
+    },
+    es6: function(js) {
+      return babel.transform(js, { blacklist: ['useStrict'] }).code
+    },
+    none: function(js) {
+      return js
+    }
+  }
+}
+
+// fix 913
+parsers.js.javascript = parsers.js.none
+// 4 the nostalgics
+parsers.js.coffeescript = parsers.js.coffee
+
+riot.parsers = parsers
+
+
+var BOOL_ATTR = ('allowfullscreen,async,autofocus,autoplay,checked,compact,controls,declare,default,'+
+  'defaultchecked,defaultmuted,defaultselected,defer,disabled,draggable,enabled,formnovalidate,hidden,'+
+  'indeterminate,inert,ismap,itemscope,loop,multiple,muted,nohref,noresize,noshade,novalidate,nowrap,open,'+
+  'pauseonexit,readonly,required,reversed,scoped,seamless,selected,sortable,spellcheck,translate,truespeed,'+
+  'typemustmatch,visible').split(','),
+  // these cannot be auto-closed
+  VOID_TAGS = 'area,base,br,col,command,embed,hr,img,input,keygen,link,meta,param,source,track,wbr'.split(','),
+  /*
+    Following attributes give error when parsed on browser with { exrp_values }
+
+    'd' describes the SVG <path>, Chrome gives error if the value is not valid format
+    https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+  */
+  PREFIX_ATTR = ['style', 'src', 'd'],
+
+  LINE_TAG = /^<([\w\-]+)>(.*)<\/\1>/gim,
+  QUOTE = /=({[^}]+})([\s\/\>]|$)/g,
+  SET_ATTR = /([\w\-]+)=(["'])([^\2]+?)\2/g,
+  EXPR = /{\s*([^}]+)\s*}/g,
+  // (tagname) (html) (javascript) endtag
+  CUSTOM_TAG = /^<([\w\-]+)\s?([^>]*)>([^\x00]*[\w\/}"']>$)?([^\x00]*?)^<\/\1>/gim,
+  SCRIPT = /<script(?:\s+type=['"]?([^>'"]+)['"]?)?>([^\x00]*?)<\/script>/gi,
+  STYLE = /<style(?:\s+([^>]+))?>([^\x00]*?)<\/style>/gi,
+  CSS_SELECTOR = /(^|\}|\{)\s*([^\{\}]+)\s*(?=\{)/g,
+  HTML_COMMENT = /<!--.*?-->/g,
+  CLOSED_TAG = /<([\w\-]+)([^>]*)\/\s*>/g,
+  BLOCK_COMMENT = /\/\*[\s\S]*?\*\//g,
+  LINE_COMMENT = /^\s*\/\/.*$/gm,
+  INPUT_NUMBER = /(<input\s[^>]*?)type=['"]number['"]/gm
+
+function mktag(name, html, css, attrs, js) {
+  return 'riot.tag(\'' +
+    name + '\', \'' +
+    html + '\'' +
+    (css ? ', \'' + css + '\'' : '') +
+    (attrs ? ', \'' + attrs.replace(/'/g, "\\'") + '\'' : '') +
+    ', function(opts) {' + js + '\n});'
+}
+
+function compileHTML(html, opts, type) {
+
+  if (!html) return ''
+
+  var brackets = riot.util.brackets,
+      b0 = brackets(0),
+      b1 = brackets(1)
+
+  // foo={ bar } --> foo="{ bar }"
+  html = html.replace(brackets(QUOTE), '="$1"$2')
+
+  // whitespace
+  html = opts.whitespace ? html.replace(/\r\n?|\n/g, '\\n') : html.replace(/\s+/g, ' ')
+
+  // strip comments
+  html = html.trim().replace(HTML_COMMENT, '')
+
+  // input type=numbr
+  html = html.replace(INPUT_NUMBER, '$1riot-type='+ b0 +'"number"'+ b1) // fake expression
+
+  // alter special attribute names
+  html = html.replace(SET_ATTR, function(full, name, _, expr) {
+    if (expr.indexOf(b0) >= 0) {
+      name = name.toLowerCase()
+
+      if (PREFIX_ATTR.indexOf(name) >= 0) name = 'riot-' + name
+
+      // IE8 looses boolean attr values: `checked={ expr }` --> `__checked={ expr }`
+      else if (BOOL_ATTR.indexOf(name) >= 0) name = '__' + name
+    }
+
+    return name + '="' + expr + '"'
+  })
+
+  // run expressions trough parser
+  if (opts.expr) {
+    html = html.replace(brackets(EXPR), function(_, expr) {
+      var ret = compileJS(expr, opts, type).trim().replace(/[\r\n]+/g, '').trim()
+      if (ret.slice(-1) == ';') ret = ret.slice(0, -1)
+      return b0 + ret + b1
+    })
+  }
+
+  // <foo/> -> <foo></foo>
+  html = html.replace(CLOSED_TAG, function(_, name, attr) {
+    var tag = '<' + name + (attr ? ' ' + attr.trim() : '') + '>'
+
+    // Do not self-close HTML5 void tags
+    if (VOID_TAGS.indexOf(name.toLowerCase()) == -1) tag += '</' + name + '>'
+    return tag
+  })
+
+  // escape single quotes
+  html = html.replace(/'/g, "\\'")
+
+  // \{ jotain \} --> \\{ jotain \\}
+  html = html.replace(brackets(/\\{|\\}/g), '\\$&')
+
+  // compact: no whitespace between tags
+  if (opts.compact) html = html.replace(/> </g, '><')
+
+  return html
+
+}
+
+
+function riotjs(js) {
+
+  // strip comments
+  js = js.replace(LINE_COMMENT, '').replace(BLOCK_COMMENT, '')
+
+  // ES6 method signatures
+  var lines = js.split('\n'),
+      es6Ident = ''
+
+  lines.forEach(function(line, i) {
+    var l = line.trim()
+
+    // method start
+    if (l[0] != '}' && ~l.indexOf('(')) {
+      var end = l.match(/[{}]$/),
+          m = end && line.match(/^(\s+)([$\w]+)\s*\(([$\w,\s]*)\)\s*\{/)
+
+      if (m && !/^(if|while|switch|for|catch|function)$/.test(m[2])) {
+        lines[i] = m[1] + 'this.' + m[2] + ' = function(' + m[3] + ') {'
+
+        // foo() { }
+        if (end[0] == '}') {
+          lines[i] += ' ' + l.slice(m[0].length - 1, -1) + '}.bind(this)'
+
+        } else {
+          es6Ident = m[1]
+        }
+      }
+
+    }
+
+    // method end
+    if (line.slice(0, es6Ident.length + 1) == es6Ident + '}') {
+      lines[i] = es6Ident + '}.bind(this);'
+      es6Ident = ''
+    }
+
+  })
+
+  return lines.join('\n')
+
+}
+
+function scopedCSS (tag, style, type) {
+  // 1. Remove CSS comments
+  // 2. Find selectors and separate them by conmma
+  // 3. keep special selectors as is
+  // 4. prepend tag and [riot-tag]
+  return style.replace(BLOCK_COMMENT, '').replace(CSS_SELECTOR, function (m, p1, p2) {
+    return p1 + ' ' + p2.split(/\s*,\s*/g).map(function(sel) {
+      var s = sel.trim()
+      var t = (/:scope/.test(s) ? '' : ' ') + s.replace(/:scope/, '')
+      return s[0] == '@' || s == 'from' || s == 'to' || /%$/.test(s) ? s :
+        tag + t + ', [riot-tag="' + tag + '"]' + t
+    }).join(',')
+  }).trim()
+}
+
+function compileJS(js, opts, type) {
+  if (!js) return ''
+  var parser = opts.parser || (type ? riot.parsers.js[type] : riotjs)
+  if (!parser) throw new Error('Parser not found "' + type + '"')
+  return parser(js.replace(/\r\n?/g, '\n'), opts)
+}
+
+function compileTemplate(lang, html) {
+  var parser = riot.parsers.html[lang]
+  if (!parser) throw new Error('Template parser not found "' + lang + '"')
+  return parser(html.replace(/\r\n?/g, '\n'))
+}
+
+function compileCSS(style, tag, type, scoped) {
+  if (type === 'scoped-css') scoped = 1
+  else if (riot.parsers.css[type]) style = riot.parsers.css[type](tag, style)
+  else if (type !== 'css') throw new Error('CSS parser not found: "' + type + '"')
+  if (scoped) style = scopedCSS(tag, style)
+  return style.replace(/\s+/g, ' ').replace(/\\/g, '\\\\').replace(/'/g, "\\'").trim()
+}
+
+function compile(src, opts) {
+
+  if (!opts) opts = {}
+  else {
+
+    if (opts.brackets) riot.settings.brackets = opts.brackets
+
+    if (opts.template) src = compileTemplate(opts.template, src)
+  }
+
+  src = src.replace(LINE_TAG, function(_, tagName, html) {
+    return mktag(tagName, compileHTML(html, opts), '', '', '')
+  })
+
+  return src.replace(CUSTOM_TAG, function(_, tagName, attrs, html, js) {
+    var style = '',
+        type = opts.type
+
+    if (html) {
+
+      // js wrapped inside <script> tag
+      if (!js.trim()) {
+        html = html.replace(SCRIPT, function(_, _type, script) {
+          if (_type) type = _type.replace('text/', '')
+          js = script
+          return ''
+        })
+      }
+
+      // styles in <style> tag
+      html = html.replace(STYLE, function(_, types, _style) {
+        var scoped = /(?:^|\s+)scoped(\s|=|$)/i.test(types),
+            type = types && types.match(/(?:^|\s+)type\s*=\s*['"]?([^'"\s]+)['"]?/i)
+        if (type) type = type[1].replace('text/', '')
+        style += (style ? ' ' : '') + compileCSS(_style.trim(), tagName, type || 'css', scoped)
+        return ''
+      })
+    }
+
+    return mktag(
+      tagName,
+      compileHTML(html, opts, type),
+      style,
+      compileHTML(attrs, ''),
+      compileJS(js, opts, type)
+    )
+
+  })
+
+}
+var doc = window.document,
+    promise,
+    ready
+
+
+function GET(url, fn) {
+  var req = new XMLHttpRequest()
+
+  req.onreadystatechange = function() {
+    if (req.readyState == 4 && (req.status == 200 || (!req.status && req.responseText.length)))
+      fn(req.responseText)
+  }
+  req.open('GET', url, true)
+  req.send('')
+}
+
+function unindent(src) {
+  var ident = /[ \t]+/.exec(src)
+  if (ident) src = src.replace(new RegExp('^' + ident[0], 'gm'), '')
+  return src
+}
+
+function globalEval(js) {
+  var node = doc.createElement('script'),
+      root = doc.documentElement
+
+  node.text = compile(js)
+  root.appendChild(node)
+  root.removeChild(node)
+}
+
+function compileScripts(fn) {
+  var scripts = doc.querySelectorAll('script[type="riot/tag"]'),
+      scriptsAmount = scripts.length
+
+  function done() {
+    promise.trigger('ready')
+    ready = true
+    if (fn) fn()
+  }
+
+  if (!scriptsAmount) {
+    done()
+  } else {
+    [].map.call(scripts, function(script) {
+      var url = script.getAttribute('src')
+
+      function compileTag(source) {
+        globalEval(source)
+        scriptsAmount--
+        if (!scriptsAmount) {
+          done()
+        }
+      }
+
+      return url ? GET(url, compileTag) : compileTag(unindent(script.innerHTML))
+    })
+  }
+}
+
+
+riot.compile = function(arg, fn) {
+
+  // string
+  if (typeof arg === T_STRING) {
+
+    // compile & return
+    if (arg.trim()[0] == '<') {
+      var js = unindent(compile(arg))
+      if (!fn) globalEval(js)
+      return js
+
+    // URL
+    } else {
+      return GET(arg, function(str) {
+        var js = unindent(compile(str))
+        globalEval(js)
+        if (fn) fn(js, str)
+      })
+    }
+  }
+
+  // must be a function
+  if (typeof arg !== 'function') arg = undefined
+
+  // all compiled
+  if (ready) return arg && arg()
+
+  // add to queue
+  if (promise) {
+    if (arg) promise.on('ready', arg)
+
+  // grab riot/tag elements + load & execute them
+  } else {
+    promise = riot.observable()
+    compileScripts(arg)
+  }
+
+}
+
+// reassign mount methods
+var mount = riot.mount
+
+riot.mount = function(a, b, c) {
+  var ret
+  riot.compile(function() { ret = mount(a, b, c) })
+  return ret
+}
+
+// @deprecated
+riot.mountTo = riot.mount
 
   // share methods for other riot parts, e.g. compiler
   riot.util = { brackets: brackets, tmpl: tmpl }
@@ -1487,82 +1857,83 @@ Description : This facilitates a mock sizzle selector
 })(window);
 (function(gems) {
 
-        var PB = function() {
-            var _self = this,
-                _events = {};
+    var PB = function() {
+        var _self = this,
+            _events = {};
 
-            _self.on = function(event, fn, once) {
-                if (arguments.length < 2 ||
-                    typeof event !== "string" ||
-                    typeof fn !== "function") return;
+        _self.on = function(event, fn, once) {
+            if (arguments.length < 2 ||
+                typeof event !== "string" ||
+                typeof fn !== "function") return;
 
-                var fnString = fn.toString();
+            var fnString = fn.toString();
 
-                // if the named event object already exists in the dictionary...
-                if (typeof _events[event] !== "undefined") {
-                    if (typeof once === "boolean") {
-                        // the function already exists, so update it's 'once' value.
-                        _events[event].callbacks[fnString].once = once;
-                    } else {
-                        _events[event].callbacks[fnString] = {
-                            cb: fn,
-                            once: !!once
-                        };
-                    }
+            // if the named event object already exists in the dictionary...
+            if (typeof _events[event] !== "undefined") {
+                if (typeof once === "boolean") {
+                    // the function already exists, so update it's 'once' value.
+                    _events[event].callbacks[fnString].once = once;
                 } else {
-                    // create a new event object in the dictionary with the specified name and callback.
-                    _events[event] = {
-                        callbacks: {}
-                    };
-
                     _events[event].callbacks[fnString] = {
                         cb: fn,
                         once: !!once
                     };
                 }
-            };
+            } else {
+                // create a new event object in the dictionary with the specified name and callback.
+                _events[event] = {
+                    callbacks: {}
+                };
 
-            _self.once = function(event, fn) {
-                _self.on(event, fn, true);
-            };
-
-            _self.off = function(event, fn) {
-                if (typeof event !== "string" ||
-                    typeof _events[event] === "undefined") return;
-
-                // remove just the function, if passed as a parameter and in the dictionary.
-                if (typeof fn === "function") {
-                    var fnString = fn.toString(),
-                        fnToRemove = _events[event].callbacks[fnString];
-
-                    if (typeof fnToRemove !== "undefined") {
-                        // delete the callback object from the dictionary.
-                        delete _events[event].callbacks[fnString];
-                    }
-                } else {
-                    // delete all functions in the dictionary that are
-                    // registered to this event by deleting the named event object.
-                    delete _events[event];
-                }
-            };
-
-            _self.trigger = function(event, data) {
-                if (typeof event !== "string" ||
-                    typeof _events[event] === "undefined") return;
-
-                for (var fnString in _events[event].callbacks) {
-                    var callbackObject = _events[event].callbacks[fnString];
-
-                    if (typeof callbackObject.cb === "function") callbackObject.cb(data);
-                    if (typeof callbackObject.once === "boolean" && callbackObject.once === true) _self.off(event, callbackObject.cb);
-                }
-            };
-
+                _events[event].callbacks[fnString] = {
+                    cb: fn,
+                    once: !!once
+                };
+            }
         };
 
-        gems.Dispatcher = new PB();
+        _self.once = function(event, fn) {
+            _self.on(event, fn, true);
+        };
 
-    })(gems);
+        _self.off = function(event, fn) {
+            if (typeof event !== "string" ||
+                typeof _events[event] === "undefined") return;
+
+            // remove just the function, if passed as a parameter and in the dictionary.
+            if (typeof fn === "function") {
+                var fnString = fn.toString(),
+                    fnToRemove = _events[event].callbacks[fnString];
+
+                if (typeof fnToRemove !== "undefined") {
+                    // delete the callback object from the dictionary.
+                    delete _events[event].callbacks[fnString];
+                }
+            } else {
+                // delete all functions in the dictionary that are
+                // registered to this event by deleting the named event object.
+                delete _events[event];
+            }
+        };
+
+        _self.trigger = function(event, data) {
+            if (typeof event !== "string" ||
+                typeof _events[event] === "undefined") return;
+
+            for (var fnString in _events[event].callbacks) {
+                var callbackObject = _events[event].callbacks[fnString];
+
+                if (typeof callbackObject.cb === "function") callbackObject.cb(data);
+                if (typeof callbackObject.once === "boolean" && callbackObject.once === true) _self.off(event, callbackObject.cb);
+            }
+        };
+
+    };
+
+    gems.Dispatcher = new PB();
+
+})(gems);
+
 /* Promises ===============*/
 (function(gems) {
     function Promise() {
@@ -1907,7 +2278,7 @@ Description : This facilitates the router of the framework
                             route.prevPage = currRoute;
                             history.pushState(route, "", newRoute);
                         }
-                        veronica.eventBus.trigger("veronica:stateChange", route);
+                        gems.Dispatcher.trigger("veronica:stateChange", route);
                         var pageEnterEffect = "mounting";
                         var pageLeaveEffect = "unmount";
                         if (arguments[1] && typeof(arguments[1]) == "string") {
@@ -1937,7 +2308,7 @@ Description : This facilitates the router of the framework
         // if(e) because veronica shouldn't intrupt the #changes
         if (e && e.state) {
             if (appStatus.currentState.state.state !== e.state.state) {
-                veronica.eventBus.trigger("veronica:stateChange", e.state);
+                gems.Dispatcher.trigger("veronica:stateChange", e.state);
             }
             evalRoute(e.state, "mounting-pop", "unmount-pop");
         }
@@ -2001,6 +2372,7 @@ Description : This facilitates the router of the framework
 
                 setTimeout(function() {
                     if (!shownEventFired) {
+                        animEndCallback(appStatus.pageTag,elem)
                         appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
                     }
                 }, veronica.settings.maxPageTransitionTime);
@@ -2047,7 +2419,7 @@ Description : This facilitates the router of the framework
     veronica.getPrevPageUrl = getPrevPageUrl;
     veronica.addRoute = addRoute;
     veronica.loc = loc;
-    gems.totalRouteLength = appStatus.routes.length;
+    gems.totalRouteLength = function(){return appStatus.routes.length};
 
 })(gems, veronica);
 
@@ -2080,7 +2452,12 @@ Description : This is the base class
 
     gems.flux.Actions.getActions=function(name){
         var klass=actions[name];
-        return new klass();
+        if(klass){
+            return new klass();    
+        }
+        else{
+            return null;
+        }
     }
 
 })(veronica,gems.http, gems.Dispatcher, gems.promise);
@@ -2090,22 +2467,71 @@ Author : Prateek Bhatnagar
 Data : 6th-Sept-2015
 Description : This is the base class for stores
 =============================*/
-;(function(veronica, http, Dispatcher, promise) {
+;
+(function(veronica, http, Dispatcher, promise) {
+    var stores = {};
+    gems.flux.Stores = {};
+
     function Store() {
         this.Dispatcher = {
-        	on: Dispatcher.trigger,
-        	off: Dispatcher.trigger,
-        	once: Dispatcher.trigger
+            on: Dispatcher.on,
+            off: Dispatcher.off,
+            once: Dispatcher.once
         };
         this.Storage = gems.Storage;
     }
 
-    gems.flux.createStore=function(childClass){
-        
+    gems.flux.Stores.createStore = function(childClass) {
+        try {
+            var klass = gems.extender(Store, childClass);
+            stores[childClass.name] = new klass();
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
-})(veronica,gems.http, gems.Dispatcher);
+    gems.flux.Stores.getStores = function(name) {
+        return stores[name];
+    }
 
+})(veronica, gems.http, gems.Dispatcher);
+
+/*============================
+Author : Prateek Bhatnagar
+Data : 7th-Sept-2015
+Description : This facilitates the initialization of the framework
+=============================*/
+(function(gems,veronica){
+    function init() {
+
+        if (!gems.capabilities.testAnimationCapability()) {
+            $("body")[0].classList.add("noanim");
+        }
+
+        if (gems.capabilities.isBrowserSemiSupported()) {
+            globals.BROWSER_SUPPORT = "B";
+            $("body")[0].classList.add("noanim");
+        }
+
+        //mount riot
+        riot.mount("*", {});
+
+        //mount initial page
+        if(gems.totalRouteLength()>0){
+            veronica.loc(location.pathname);
+            gems.Dispatcher.trigger("veronica:init");
+        }
+
+        document.addEventListener("click", gems.capabilities.handleClick);
+    }
+
+    document.onreadystatechange = function() {
+        if (document.readyState == "interactive") {
+            init();
+        }
+    };
+})(gems,veronica);
     veronica.flux = gems.flux;
     window.veronica = veronica;
 

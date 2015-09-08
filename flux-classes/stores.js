@@ -10,14 +10,14 @@ Description : This is the base class for stores
 
     function Store() {
         this.Dispatcher = {
-            on: Dispatcher.trigger,
-            off: Dispatcher.trigger,
-            once: Dispatcher.trigger
+            on: Dispatcher.on,
+            off: Dispatcher.off,
+            once: Dispatcher.once
         };
         this.Storage = gems.Storage;
     }
 
-    gems.flux.createStore = function(childClass) {
+    gems.flux.Stores.createStore = function(childClass) {
         try {
             var klass = gems.extender(Store, childClass);
             stores[childClass.name] = new klass();
@@ -27,13 +27,8 @@ Description : This is the base class for stores
         }
     }
 
-    gems.flux.Actions.getStores = function(name) {
-        var klass = stores[name];
-        if (klass) {
-            return new klass();
-        } else {
-            return null;
-        }
+    gems.flux.Stores.getStores = function(name) {
+        return stores[name];
     }
 
 })(veronica, gems.http, gems.Dispatcher);
