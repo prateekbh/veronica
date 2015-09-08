@@ -1,14 +1,50 @@
 # Veronica JS
-Veronica ❤ Riot
+Veronica ❤ [Riot](http://riotjs.com/)
 
 Veronica JS is a framework to Riot JS library.
-Veronica as a framework focuses but is not restricted to Mobile web, with its slim size and entirity in nature we tend to make mobile web a delightful experience again.
+Based on Facebook's flux architecture this framework is focused but is not restricted to Mobile web, with its slim size and entirity in nature we tend to make mobile web a delightful experience again.
 
-Veronica comes with multiple features which help you build, organise and power your Web APP without the bloat.
+In footsteps of [flux](https://facebook.github.io/flux/docs/overview.html) framework, veronica boots itself with a singleton dispatcher and ability to create singleton stores and actions(can have multiple instances).
 
 
-### Veronica API
-Following are the APIs for Veronica
+
+### Veronica Flux namespace
+This name pace is the store Actions and Stores.
+
+Actions and Stores have functions createActions/createStores and getAction/getStore which help you create/get instances of both.
+
+### Veronica Actions
+Creation of Actions
+```
+ function ItemActions(){
+ 	this.addItem(item){
+ 		this.Dispatcher.trigger("item:action",{data:item});
+ 	}
+ }
+
+ veronica.flux.Actions.createAction(ItemActions);	//creating an action
+
+ //accessing inside a view
+ var itemActionObj=veronica.flux.Actions.getAction("ItemActions");
+itemActionObj.addItem("my shopping item");
+
+```
+
+Actions in veronica have inbuilt Ajax capabilities.
+
+Ajax Usage in actions
+```
+	function ItemActions(){
+		this.fetchItemDetails(itemid){
+			//this.http object exposes get/post/delete/put methods
+			this.http.get("url?id="+itemid).success(function(res){
+				this.Dispatcher.trigger("item:detail",{data:res});
+			})
+		}
+	}
+```
+
+P.S. Only Actions can/should perform Ajax in veronica
 
 ### Veronica Sizzle
 Veronica gives $ selector at window scope which returns an array of HTMLElements, that can be itterated through to perform operations on these elements
