@@ -1,5 +1,8 @@
-1..1
-ok 1 Veronica Test Suite =>  Actions tests:  Actions are there
-# tests 1
-# pass 1
+1..4
+ok 1 Veronica Test Suite =>  Namespace test:  Actions are there
+ok 2 Veronica Test Suite =>  Namespace test:  Stores are there
+ok 3 Veronica Test Suite =>  Namespace test:  Actions functions are there
+ok 4 Veronica Test Suite =>  Namespace test:  Store functions are there
+# tests 4
+# pass 4
 # fail 0

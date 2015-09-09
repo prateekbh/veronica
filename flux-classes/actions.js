@@ -25,7 +25,7 @@ Description : This is the base class
         }
     }
 
-    gems.flux.Actions.getActions=function(name){
+    gems.flux.Actions.getAction=function(name){
         var klass=actions[name];
         if(klass){
             return new klass();    
