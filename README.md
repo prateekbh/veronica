@@ -1,3 +1,5 @@
+[![Build Status][travis-image]][https://travis-ci.org/prateekbh/veronica.svg?branch=master]
+
 # Veronica JS
 Veronica ❤ [Riot](http://riotjs.com/)
 
