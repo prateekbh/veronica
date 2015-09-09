@@ -1,6 +1,6 @@
 {
   "name": "veronica-x",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": "Prateek Bhatnagar <prateek89born@gmail.com>",
   "private": false,
   "scripts": {
@@ -23,5 +23,12 @@
     "grunt-contrib-uglify": "^0.9.1",
     "load-grunt-tasks": "^3.1.0",
     "mocha-phantomjs": "^3.6.0"
-  }
+  },
+  "files": [
+    "demo",
+    "veronica.js",
+    "veronica.min.js",
+    "veronica+compiler.js",
+    "veronica+compiler.min.js",
+  ]
 }
