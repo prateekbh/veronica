@@ -21,6 +21,7 @@
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "*",
     "grunt-contrib-uglify": "^0.9.1",
-    "load-grunt-tasks": "^3.1.0"
+    "load-grunt-tasks": "^3.1.0",
+    "mocha-phantomjs": "^3.6.0"
   }
 }
