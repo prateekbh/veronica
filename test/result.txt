@@ -1,0 +1,5 @@
+1..1
+ok 1 Veronica Test Suite =>  Actions tests:  Actions are there
+# tests 1
+# pass 1
+# fail 0

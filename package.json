@@ -5,7 +5,7 @@
   "private": false,
   "scripts": {
      "build": "grunt build",
-     "test": "grunt test",
+     "test": "./node_modules/.bin/mocha-phantomjs -R tap test/tests.html > test/result.txt",
      "all": "grunt"
     },
   "repository": {

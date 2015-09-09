@@ -1,9 +1,11 @@
-![Build Status](https://travis-ci.org/prateekbh/veronica.svg?branch=master")
+[![Build Status][travis-image]][travis-url]
+[travis-url]:https://travis-ci.org/prateekbh/veronica
+[travis-image]: https://api.travis-ci.org/prateekbh/veronica.svg?branch=master&style=flat-square
 
 # Veronica JS
 Veronica ❤ [Riot](http://riotjs.com/)
 
-Veronica JS is a framework to Riot JS library.
+Veronica JS is a frmework to Riot JS library.
 Based on Facebook's flux architecture this framework is focused but is not restricted to Mobile web, with its slim size and entirity in nature we tend to make mobile web a delightful experience again.
 
 In footsteps of [flux](https://facebook.github.io/flux/docs/overview.html) framework, veronica boots itself with a singleton dispatcher and ability to create singleton stores and actions(can have multiple instances).
