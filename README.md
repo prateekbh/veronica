@@ -9,7 +9,7 @@ In footsteps of [flux](https://facebook.github.io/flux/docs/overview.html) frame
 
 
 ### Veronica Flux namespace
-This name pace is the store Actions and Stores.
+This namespace is the store Actions and Stores classes.
 
 Actions and Stores have functions createActions/createStores and getAction/getStore which help you create/get instances of both.
 
@@ -56,7 +56,7 @@ Creating a Store
 function ItemStores(){
 	var _shoppingList=[];
 
-	this.Dispatcher.on("item:action",addItemToList);
+	this.Dispatcher.register("item:action",addItemToList);
 
 	this.getItems=function(){
 		return _shoppingList;
@@ -67,7 +67,7 @@ function ItemStores(){
 	}
 
 	this.removeAddItemListener=function(data){
-		this.Dispatcher.off("item:action",addItemToList);	//removing a listener
+		this.Dispatcher.unregister("item:action",addItemToList);	//removing a listener
 	}
 }
 
@@ -84,45 +84,47 @@ Actions and Stores in veronica have access to different access to specific APIs 
 Dispatcher has following 4 APIs
 ```
 //only present in Stores
-this.Dispatcher.on("eventname",callback)
-this.Dispatcher.off("eventname",callback)
-this.Dispatcher.once("eventname",callback)
+this.Dispatcher.register("eventname",callback)
+this.Dispatcher.unregister("eventname",callback)
+this.Dispatcher.registerce("eventname",callback)
 
 //only present in Actions
 this.Dispatcher.trigger("eventname",{data})
 ```
 
-### every thing that follows does not hold any significance now
-
 ### Veronica Router
+Veronica comes with a push state router, allowing you to handle your urls without the hashbang problem
 
+API
 
-Veronica event bus is a bus for facilitating pubsub in the framework.
-"veronica.eventBus" is the singleton object defined for the same.
-
-Usage: 
 ```
-veronica.eventBus.on("eventname",callback)
-veronica.eventBus.off("eventname",callback)
-veronica.eventBus.once("eventname",callback)
-veronica.eventBus.trigger("eventname",{data})
-```
+	//creating a route object
+	var routeObj=veronica.createRoute(stateName, urlRegex, componentToMount);
 
+	//adding a route
+	veronica.addRoute(routeObj);
+
+	//navigating to urls
+	veronica.loc("url to go to");
+
+	//acessing current location data
+	veronica.loc();
+
+	//get current page url
+	vernocia.getCurrentPath()
+
+	//get previous page url
+	vernocia.getPrevPageUrl()
+```
 ### Veronica Promises
 The promises object gives u a way to create $q promises the new new constructer.
 You resolve/reject these promises and call backs  are registered with .success or .error
 
-### Veronica Http/Ajax
-Veronica under "Http" name space puts the ability make ajax calls via GET/POST/PUT/DELETE.
-The returning object are above said promises
-
 ### Veronica Storage
-Veronica under its two namespaces DS/Session wraps localStorage and sessionStorage respectivly, this not only allows session storage to be working even where it is not present but also allows is an apt place to put your ios/android application cache hooks.
-
-### Veronica Router
-Veronica comes with a full URL support router that not only saves your hash links for specific positions in page but also delights your SEO ranks
+This feature is only available for stores
+Veronica under its two namespaces DS/Session wraps localStorage and sessionStorage respectivly, this not only allows session storage to be working even where it is not present but we plan to expose library which can be used to push data to either localstorage/indexedDB without changing the API structure.
 
 ### Roadmap to 1.0
 Our roadmap to a 1.0 version currently includes introding the following stuff in the framework
-- Flux architecture
 - A good amount of test coverage
+- Regex free routers

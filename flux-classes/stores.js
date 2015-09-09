@@ -10,8 +10,8 @@ Description : This is the base class for stores
 
     function Store() {
         this.Dispatcher = {
-            on: Dispatcher.on,
-            off: Dispatcher.off,
+            register: Dispatcher.on,
+            unregister: Dispatcher.off,
             once: Dispatcher.once
         };
         this.Storage = gems.Storage;
