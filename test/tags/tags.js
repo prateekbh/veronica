@@ -1,0 +1,1 @@
+riot.tag('demo-intro', '<h1>hello world!</h1>', function(opts) {});
