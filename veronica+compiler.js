@@ -2227,12 +2227,11 @@ Description : This facilitates the router of the framework
 
     appStatus.currentComponent = null;
 
-    function createRoute(stateName, urlRegex, componentToMount, preserveDateOnUnmount) {
+    function createRoute(stateName, urlRegex, componentToMount) {
         return {
             url: urlRegex,
             state: stateName,
-            component: componentToMount,
-            preserveDateOnUnmount: preserveDateOnUnmount || false
+            component: componentToMount
         };
     }
 
@@ -2322,12 +2321,7 @@ Description : This facilitates the router of the framework
 
         var componentName = stateObj.component;
         var prevState = appStatus.currentState;
-        var preserveComponentData = false;
 
-        //check if data of this component is to be preserved
-        if (prevState && prevState.state && prevState.state.preserveDateOnUnmount) {
-            preserveComponentData = prevState.state.preserveDateOnUnmount;
-        }
 
         //initialize current state and component
         appStatus.currentState.name = stateObj.state;
@@ -2474,8 +2468,8 @@ Description : This is the base class for stores
 
     function Store() {
         this.Dispatcher = {
-            on: Dispatcher.on,
-            off: Dispatcher.off,
+            register: Dispatcher.on,
+            unregister: Dispatcher.off,
             once: Dispatcher.once
         };
         this.Storage = gems.Storage;
