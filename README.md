@@ -129,8 +129,8 @@ This feature is only available for stores
 Veronica under its two namespaces DS/Session wraps localStorage and sessionStorage respectivly, this not only allows session storage to be working even where it is not present but we plan to expose library which can be used to push data to either localstorage/indexedDB without changing the API structure.
 
 ### Changelog
--0.0.1	Basic APIs + push-state router to work with different components
--0.5	Introduced Flux architecture and segregated API for different components
+- 0.0.1	Basic APIs + push-state router to work with different components
+- 0.5	Introduced Flux architecture and segregated API for different components
 
 
 ### Roadmap to 1.0
