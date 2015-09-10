@@ -14,8 +14,9 @@ riot.tag('demo-list', '<h1>Your List</h1><div each="{l in list}">{l}</div>', fun
     this.list = [];
     var _self = this;
     this.on("mount", function() {
+        var listStoreObj=veronica.flux.Stores.getStore("ListStore");
         _self.update({
-            list: veronica.flux.Stores.getStore("ListStore").getItems()
+            list: listStoreObj.getItems()
         });
     });
 });

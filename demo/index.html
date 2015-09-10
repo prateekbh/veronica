@@ -16,15 +16,15 @@
 	
 	<script type="text/javascript" src="../veronica.js"></script>
 	<script>
-		function ListStore(){
+		function ListStore(EventEmitter){
 			var _list=[];
-
 			this.Dispatcher.register("item:added",function(data){
 				_list.push(data.data);
 			});
 			this.getItems=function(){
+				EventEmitter.trigger("hi");
 				return _list;
-			}
+			};
 		};
 		veronica.flux.Stores.createStore(ListStore);
 		function ItemsActions(){

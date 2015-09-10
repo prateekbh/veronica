@@ -4,7 +4,7 @@ Data : 6th-Sept-2015
 Description : This is the base class for stores
 =============================*/
 ;
-(function(veronica, http, Dispatcher, promise) {
+(function(veronica, Dispatcher,PubSub) {
     var stores = {};
     gems.flux.Stores = {};
 
@@ -20,7 +20,14 @@ Description : This is the base class for stores
     gems.flux.Stores.createStore = function(childClass) {
         try {
             var klass = gems.extender(Store, childClass);
-            stores[childClass.name] = new klass();
+            var PB=new PubSub();
+            var obj=new klass(PB);
+            obj.on=PB.on;
+            obj.off=PB.off;
+            obj.once=PB.once;
+
+            stores[childClass.name] = obj;
+            
             return true;
         } catch (e) {
             return false;
@@ -31,4 +38,4 @@ Description : This is the base class for stores
         return stores[name];
     }
 
-})(veronica, gems.http, gems.Dispatcher);
+})(veronica, gems.Dispatcher,gems.PB);

@@ -32,4 +32,20 @@ describe('Veronica Test Suite => ', function() {
             });
         });
     });
+    // describe('Store defination test: ', function() {
+    //     var SampleStore=function(){
+    //         this.store="abc"
+    //     };
+    //     veronica.flux.Stores.createStore(SampleStore);
+    //     it("Store should have pubsub methods",function(done){
+    //         check(done, function() {
+    //             var sampleStoreObj=veronica.flux.Stores.getStore("SampleStore");
+    //             console.log("YO: "+sampleStoreObj);
+    //             // debugger;
+    //             // expect(sampleStoreObj.on).to.be.a("Function");
+    //             // expect(sampleStoreObj.off).to.be.a("Function");
+    //             // expect(sampleStoreObj.trigger).to.be.a("Function");
+    //         });
+    //     })
+    // });
 });
