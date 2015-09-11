@@ -16,13 +16,13 @@
 	
 	<script type="text/javascript" src="../veronica.js"></script>
 	<script>
-		function ListStore(EventEmitter){
+		function ListStore(){
 			var _list=[];
 			this.Dispatcher.register("item:added",function(data){
 				_list.push(data.data);
 			});
 			this.getItems=function(){
-				EventEmitter.trigger("hi");
+				//this.emit("init");
 				return _list;
 			};
 		};

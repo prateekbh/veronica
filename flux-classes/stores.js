@@ -9,25 +9,22 @@ Description : This is the base class for stores
     gems.flux.Stores = {};
 
     function Store() {
+        var PB=new PubSub();
         this.Dispatcher = {
             register: Dispatcher.on,
             unregister: Dispatcher.off,
             once: Dispatcher.once
         };
         this.Storage = gems.Storage;
+        this.subscribe=PB.on;
+        this.unsubscribe=PB.off;
+        this.emit=function(eventName){PB.trigger(eventName,{});}
     }
 
     gems.flux.Stores.createStore = function(childClass) {
         try {
             var klass = gems.extender(Store, childClass);
-            var PB=new PubSub();
-            var obj=new klass(PB);
-            obj.on=PB.on;
-            obj.off=PB.off;
-            obj.once=PB.once;
-
-            stores[childClass.name] = obj;
-            
+            stores[childClass.name] = new klass();
             return true;
         } catch (e) {
             return false;
