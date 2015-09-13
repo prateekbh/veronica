@@ -18,9 +18,5 @@ riot.tag('demo-list', '<h1>Your List</h1><div each="{l in list}">{l}</div>', fun
         _self.update({
             list: listStoreObj.getItems()
         });
-        
-        // listStoreObj.subscribe("init",function(){
-            
-        // })
     });
 });

@@ -1899,7 +1899,7 @@ Description : This facilitates the router of the framework
                 var urlFound = false;
                 for (var r in appStatus.routes) {
                     var route = appStatus.routes[r];
-
+                    urlFound = true;
                     //check if route matches and is not the current route
                     if (newRoute.match(route.url) && (appStatus.currentState.name !== route.state)) {
                         if (appStatus.currentState.name === "") {
@@ -1918,7 +1918,6 @@ Description : This facilitates the router of the framework
                             pageLeaveEffect = arguments[2];
                         }
                         evalRoute(route, pageEnterEffect, pageLeaveEffect);
-                        urlFound = true;
                         break;
                     }
                 }
@@ -2028,6 +2027,7 @@ Description : This facilitates the router of the framework
         currElem.remove();
         newPage.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
         appStatus.pageTag = newPage;
+        gems.Dispatcher.trigger("veronica:stateTransitionComplete", appStatus.currentState.state);
     }
 
     function getPrevPageUrl() {
