@@ -2392,6 +2392,7 @@ Description : This facilitates the router of the framework
                 //if this is the first time a page is being mounted
                 appStatus.pageTag.classList.add(appStatus.currentComponent.tagName.toLowerCase());
                 appStatus.pageTag.appendChild(appStatus.currentComponent);
+                gems.Dispatcher.trigger("veronica:stateTransitionComplete", appStatus.currentState.state);
             }
         }
     }
