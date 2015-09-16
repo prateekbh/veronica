@@ -2350,23 +2350,20 @@ Description : This facilitates the router of the framework
                 elem.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
                 elem.appendChild(appStatus.currentComponent);
 
-                appStatus.pageTag.addEventListener("webkitTransitionEnd", function() {
-                    animEndCallback(this, elem);
-                    shownEventFired = true;
-                    appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
-                });
+                 appStatus.pageTag.addEventListener("webkitTransitionEnd", transEnd);
 
-                appStatus.pageTag.addEventListener("oTransitionEnd", function() {
-                    animEndCallback(this, elem);
-                    shownEventFired = true;
-                    appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
-                });
+                 appStatus.pageTag.addEventListener("oTransitionEnd",transEnd );
 
-                appStatus.pageTag.addEventListener("transitionend", function() {
-                    animEndCallback(this, elem);
-                    shownEventFired = true;
-                    appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
-                });
+                 appStatus.pageTag.addEventListener("transitionend", transEnd);
+
+                 function transEnd() {
+                   this.removeEventListener("transitionend",transEnd);
+                   this.removeEventListener("webkitTransitionEnd",transEnd);
+                   this.removeEventListener("oTransitionEnd",transEnd);
+                   animEndCallback(this, elem);
+                   shownEventFired = true;
+                   appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
+                }
 
                 setTimeout(function() {
                     if (!shownEventFired) {
