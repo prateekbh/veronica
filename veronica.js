@@ -919,6 +919,7 @@ function insertTo(root, node, before) {
 }
 
 function update(expressions, tag) {
+
   each(expressions, function(expr, i) {
 
     var dom = expr.dom,
@@ -1902,7 +1903,6 @@ Description : This facilitates the router of the framework
                 var urlFound = false;
                 for (var r in appStatus.routes) {
                     var route = appStatus.routes[r];
-                    urlFound = true;
                     //check if route matches and is not the current route
                     if (newRoute.match(route.url) && (appStatus.currentState.name !== route.state)) {
                         if (appStatus.currentState.name === "") {
@@ -1911,6 +1911,7 @@ Description : This facilitates the router of the framework
                             route.prevPage = currRoute;
                             history.pushState(route, "", newRoute);
                         }
+                        urlFound = true;
                         gems.Dispatcher.trigger("veronica:stateChange", route);
                         var pageEnterEffect = "mounting";
                         var pageLeaveEffect = "unmount";
