@@ -2229,9 +2229,6 @@ Description : This facilitates the router of the framework
 
     appStatus.currentComponent = null;
 
-    var lastRiotComponent=[];
-    var newRiotComponent=[];
-
     function createRoute(stateName, urlRegex, componentToMount) {
         return {
             url: urlRegex,
@@ -2335,7 +2332,7 @@ Description : This facilitates the router of the framework
 
         mountNewPage(pageEnterEffect, pageLeaveEffect);
 
-        newRiotComponent=riot.mount(componentName, {});
+        riot.mount(componentName, {});
     }
 
     function mountNewPage(pageEnterEffect, pageLeaveEffect) {
@@ -2396,12 +2393,10 @@ Description : This facilitates the router of the framework
 
     function animEndCallback(currElem, newPage) {
         currElem.className = "hidden";
-        currElem.remove();
-        if(lastRiotComponent.length>0){
-            lastRiotComponent[0].unmount();
+        if(currElem.childNodes[0]&&currElem.childNodes[0]._tag){
+          currElem.childNodes[0]._tag.unmount();
         }
-
-        lastRiotComponent=newRiotComponent;
+        currElem.remove();
         
         newPage.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
         appStatus.pageTag = newPage;
