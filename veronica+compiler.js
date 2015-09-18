@@ -2080,7 +2080,7 @@ Description : This facilitates a mock sizzle selector
                     (xhr.status < 200 || xhr.status >= 300) &&
                     xhr.status !== 304);
                 if (err) {
-                    p.reject(err);
+                    p.reject(xhr.responseText, xhr);
                 } else {
                     p.resolve(xhr.responseText, xhr);
                 }
