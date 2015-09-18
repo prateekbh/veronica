@@ -1588,7 +1588,7 @@ Description : This facilitates a mock sizzle selector
             p = new Promise();
             resolvePromise(func, context, this._successCallbacks, p);
         }
-        return p;
+        return this;
     };
 
     Promise.prototype.catch = function(func, context) {
@@ -1599,7 +1599,7 @@ Description : This facilitates a mock sizzle selector
             p = new Promise();
             resolvePromise(func, context, this._errorCallbacks, p);
         }
-        return p;
+        return this;
     };
 
     Promise.prototype.resolve = function() {
