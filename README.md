@@ -130,7 +130,9 @@ Veronica under its two namespaces DS/Session wraps localStorage and sessionStora
 
 ### Changelog
 - 0.0.1	Basic APIs + push-state router to work with different components
-- 0.5	Introduced Flux architecture and segregated API for different components
+- 0.5.0	Introduced Flux architecture and segregated API for different components
+- 0.6.0	Introduced switch for page transitioning 
+P.S. Page transitions are in beta, use at your own risk.
 
 
 ### Roadmap to 1.0

@@ -1746,7 +1746,8 @@ riot.mountTo = riot.mount
         version: "v0.0.5",
         settings: {
             viewTag: ".app-body",
-            maxPageTransitionTime: 500
+            maxPageTransitionTime: 200,
+            enablePageTransitions:false
         }
     };
 
@@ -2369,7 +2370,7 @@ Description : This facilitates the router of the framework
                     }
                 }, veronica.settings.maxPageTransitionTime);
 
-                if (globals.BROWSER_SUPPORT === "A") {
+                if (globals.BROWSER_SUPPORT === "A"&&veronica.settings.enablePageTransitions) {
                     elem.classList.add(pageEnterEffect);
                     appStatus.pageTag.classList.add(pageLeaveEffect);
                     appStatus.viewTag.appendChild(elem);
@@ -2377,7 +2378,7 @@ Description : This facilitates the router of the framework
                 } else {
                     var newComponent = appStatus.currentComponent.tagName.toLowerCase();
                     var newTag = "<div class='page " + newComponent + "'>" + "<" + newComponent + "></" + newComponent + ">" + "</div>";
-                    appStatus.pageTag.innerHTML = newTag;
+                    appStatus.viewTag.innerHTML = newTag;
                 }
 
 

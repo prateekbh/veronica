@@ -5,7 +5,8 @@
         version: "v0.0.5",
         settings: {
             viewTag: ".app-body",
-            maxPageTransitionTime: 500
+            maxPageTransitionTime: 200,
+            enablePageTransitions:false
         }
     };
 
