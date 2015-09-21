@@ -1743,7 +1743,7 @@ riot.mountTo = riot.mount
     "use strict";
 
     var veronica = {
-        version: "v0.0.5",
+        version: "v0.6.2",
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,
@@ -2211,7 +2211,8 @@ Description : This facilitates the router of the framework
 ;
 (function(gems, veronica) {
     var appStatus = {
-        shownEventFired: false
+        shownEventFired: false,
+        currentRiotPage:null
     }
 
     appStatus.viewTag = $(veronica.settings.viewTag)[0];
@@ -2335,7 +2336,14 @@ Description : This facilitates the router of the framework
 
         mountNewPage(pageEnterEffect, pageLeaveEffect);
 
-        riot.mount(componentName, {});
+        var tag=riot.mount(componentName, {});
+        if(tag.length===1){
+          if(appStatus.currentRiotPage&&appStatus.currentRiotPage.isMounted)
+          {
+            appStatus.currentRiotPage.unmount();
+          }
+          appStatus.currentRiotPage=tag[0];
+        }
     }
 
     function mountNewPage(pageEnterEffect, pageLeaveEffect) {
@@ -2373,9 +2381,6 @@ Description : This facilitates the router of the framework
                     var newTag = "<div class='page " + newComponent + "'>" + "<" + newComponent + "></" + newComponent + ">" + "</div>";
                     appStatus.viewTag.innerHTML = newTag;
                 }
-
-
-
             } else {
                 //if this is the first time a page is being mounted
                 appStatus.pageTag.classList.add(appStatus.currentComponent.tagName.toLowerCase());
@@ -2396,9 +2401,6 @@ Description : This facilitates the router of the framework
 
     function animEndCallback(currElem, newPage) {
         currElem.className = "hidden";
-        if(currElem.childNodes[0]&&currElem.childNodes[0]._tag){
-          currElem.childNodes[0]._tag.unmount();
-        }
         currElem.remove();
         
         newPage.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
