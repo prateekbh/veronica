@@ -110,6 +110,7 @@ API
 
 	//navigating to urls
 	veronica.loc("url to go to");
+	veronica.replaceLoc("url to go to");	//replace state
 
 	//acessing current location data
 	veronica.loc();
@@ -132,7 +133,8 @@ Veronica under its two namespaces DS/Session wraps localStorage and sessionStora
 - 0.0.1		Basic APIs + push-state router to work with different components
 - 0.5.0		Introduced Flux architecture and segregated API for different components
 - 0.6.0		Introduced switch for page transitioning 
-- 0.6.1,0.6.2	Minor bug fixes
+- 0.6.1,0.6.2	 Minor bug fixes
+- 0.6.3	 	Adding replaceLocation functionality to router
 P.S. Page transitions are in beta, use at your own risk.
 
 

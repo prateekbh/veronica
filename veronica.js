@@ -1373,7 +1373,7 @@ riot.mountTo = riot.mount
     "use strict";
 
     var veronica = {
-        version: "v0.6.2",
+        version: "v0.6.3",
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,
@@ -1910,7 +1910,12 @@ Description : This facilitates the router of the framework
                             history.replaceState(route, "", newRoute);
                         } else {
                             route.prevPage = currRoute;
-                            history.pushState(route, "", newRoute);
+                            if (arguments[1] && typeof(arguments[1]) == "boolean" && arguments[1]===true) {
+                              history.replaceState(route, "", newRoute);
+                            }
+                            else{
+                              history.pushState(route, "", newRoute);  
+                            }
                         }
                         urlFound = true;
                         gems.Dispatcher.trigger("veronica:stateChange", route);
@@ -1936,6 +1941,10 @@ Description : This facilitates the router of the framework
                 }
             }
         }
+    }
+
+    function replaceLoc(url){
+        loc(url,true);
     }
 
     window.onpopstate = function(e) {
