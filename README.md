@@ -28,7 +28,8 @@ Creating an Action
  	}
  }
 
- veronica.flux.Actions.createAction(ItemActions);	//creating an action
+//creating an action
+ veronica.flux.Actions.createAction("ItemActions",ItemActions);	
 
  //accessing inside a view
  var itemActionObj=veronica.flux.Actions.getAction("ItemActions");
@@ -75,7 +76,8 @@ function ItemStores(){
 	}
 }
 
- veronica.flux.Stores.createStore(ItemStores);	//creating an store
+//creating an store
+veronica.flux.Stores.createStore("ItemStores",ItemStores);	
 
  //accessing inside a view
  var itemStoreObj=veronica.flux.Stores.getStore("ItemStores");	//this will be a sigle

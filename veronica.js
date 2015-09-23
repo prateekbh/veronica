@@ -2082,9 +2082,9 @@ Description : This is the base class
         this.Promise = promise;
     }
 
-    gems.flux.Actions.createAction=function(childClass){
+    gems.flux.Actions.createAction=function(actionName,childClass){
         try{
-            actions[childClass.name]=gems.extender(Action,childClass);    
+            actions[actionName]=gems.extender(Action,childClass);    
             return true;
         }
         catch(e){
@@ -2127,10 +2127,10 @@ Description : This is the base class for stores
         this.emit=function(eventName){PB.trigger(eventName,{});}
     }
 
-    gems.flux.Stores.createStore = function(childClass) {
+    gems.flux.Stores.createStore = function(storeName,childClass) {
         try {
             var klass = gems.extender(Store, childClass);
-            stores[childClass.name] = new klass();
+            stores[storeName] = new klass();
             return true;
         } catch (e) {
             return false;

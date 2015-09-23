@@ -15,9 +15,9 @@ Description : This is the base class
         this.Promise = promise;
     }
 
-    gems.flux.Actions.createAction=function(childClass){
+    gems.flux.Actions.createAction=function(actionName,childClass){
         try{
-            actions[childClass.name]=gems.extender(Action,childClass);    
+            actions[actionName]=gems.extender(Action,childClass);    
             return true;
         }
         catch(e){
