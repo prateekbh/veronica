@@ -137,6 +137,10 @@ Veronica under its two namespaces DS/Session wraps localStorage and sessionStora
 - 0.6.0		Introduced switch for page transitioning 
 - 0.6.1,0.6.2	 Minor bug fixes
 - 0.6.3	 	Adding replaceLocation functionality to router
+- 0.6.4		Store and action creation name api change
+- 0.6.5		Global Ajax and Data setter and getter
+
+
 P.S. Page transitions are in beta, use at your own risk.
 
 

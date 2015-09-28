@@ -1631,6 +1631,9 @@ Description : This facilitates a mock sizzle selector
 })(gems);
 /* Ajax ===============*/
 ;(function(gems) {
+    var globalHeaders={};
+    var globalData={};
+
     function _encode(data) {
         var result = "";
         if (typeof data === "string") {
@@ -1666,6 +1669,14 @@ Description : This facilitates a mock sizzle selector
         var xhr, payload;
         data = data || {};
         headers = headers || {};
+
+        for(var tempHeader in globalHeaders){
+            headers[tempHeader]=globalHeaders[tempHeader];
+        }
+
+        for(var tempData in globalData){
+            data[tempData]=globalData[tempData];
+        }
 
         try {
             xhr = new_xhr();
@@ -1729,6 +1740,22 @@ Description : This facilitates a mock sizzle selector
         };
     }
 
+    function setGlobalHeaders(headers){
+        globalHeaders=headers;
+    }
+
+    function getGlobalHeaders(){
+        return globalHeaders;
+    }
+
+    function setGlobalData(data){
+        globalData=data;
+    }
+
+    function getGlobalData(){
+        return globalData;
+    }
+
     var veronicaAjax = {
         ajax: ajax,
         get: _ajaxer("GET"),
@@ -1758,6 +1785,13 @@ Description : This facilitates a mock sizzle selector
     gems.http.post = veronicaAjax.post;
     gems.http.put = veronicaAjax.put;
     gems.http.delete = veronicaAjax.del;
+
+    //global ajax funtions
+    gems.httpGlobal={};
+    gems.httpGlobal.getGlobalHeaders=getGlobalHeaders;
+    gems.httpGlobal.setGlobalHeaders=setGlobalHeaders;
+    gems.httpGlobal.getGlobalData=getGlobalData;
+    gems.httpGlobal.setGlobalData=setGlobalData;
 
 })(gems);
 /* Persistance===============*/
@@ -2179,6 +2213,7 @@ Description : This facilitates the initialization of the framework
     };
 })(gems,veronica);
     veronica.flux = gems.flux;
+    veronica.http=gems.httpGlobal;
     window.veronica = veronica;
 
 })(window, riot);
