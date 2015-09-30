@@ -1743,7 +1743,7 @@ riot.mountTo = riot.mount
     "use strict";
 
     var veronica = {
-        version: "v0.6.3",
+        version: "v0.6.6",
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,
@@ -2444,7 +2444,12 @@ Description : This facilitates the router of the framework
 
     function animEndCallback(currElem, newPage) {
         currElem.className = "hidden";
-        currElem.remove();
+        if(currElem.remove){
+            currElem.remove();
+        }
+        else if(currElem.parentElement){
+            currElem.parentElement.removeChild(currElem);
+        }
         
         newPage.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
         appStatus.pageTag = newPage;
