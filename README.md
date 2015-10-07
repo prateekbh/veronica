@@ -131,6 +131,17 @@ You resolve/reject these promises and call backs  are registered with .success o
 This feature is only available for stores
 Veronica under its two namespaces DS/Session wraps localStorage and sessionStorage respectivly, this not only allows session storage to be working even where it is not present but we plan to expose library which can be used to push data to either localstorage/indexedDB without changing the API structure.
 
+### Page Transitions
+To enable page transition animations do the following two lines of code
+```
+veronica.settings.enablePageTransitions=true;
+veronica.settings.maxPageTransitionTime=300;
+```
+
+Now upon state change outgoing state is given class "unmount/unmount-pop" and incoming component is given class "mounting"
+
+Please use CSS3 Transitions upon these classes to put exit and entry animations of the various components.
+
 ### Changelog
 - 0.0.1		Basic APIs + push-state router to work with different components
 - 0.5.0		Introduced Flux architecture and segregated API for different components
@@ -140,9 +151,8 @@ Veronica under its two namespaces DS/Session wraps localStorage and sessionStora
 - 0.6.4		Store and action creation name api change
 - 0.6.5		Global Ajax and Data setter and getter
 - 0.6.6		HTML remove function bug fix
+- 0.7.0		Enabling page transitions
 
-
-P.S. Page transitions are in beta, use at your own risk.
 
 
 ### Roadmap to 1.0

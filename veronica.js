@@ -1876,7 +1876,7 @@ Description : This facilitates the router of the framework
 (function(gems, veronica) {
     var appStatus = {
         shownEventFired: false,
-        currentRiotPage:null
+        mountingComponent:null
     }
 
     appStatus.viewTag = $(veronica.settings.viewTag)[0];
@@ -2010,13 +2010,7 @@ Description : This facilitates the router of the framework
         mountNewPage(pageEnterEffect, pageLeaveEffect);
 
         var tag=riot.mount(componentName, {});
-        if(tag.length===1){
-          if(appStatus.currentRiotPage&&appStatus.currentRiotPage.isMounted)
-          {
-            appStatus.currentRiotPage.unmount();
-          }
-          appStatus.currentRiotPage=tag[0];
-        }
+
     }
 
     function mountNewPage(pageEnterEffect, pageLeaveEffect) {
@@ -2030,6 +2024,8 @@ Description : This facilitates the router of the framework
                 appStatus.shownEventFired = false;
                 elem.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
                 elem.appendChild(appStatus.currentComponent);
+
+                appStatus.mountingComponent=elem;
 
                 if(veronica.settings.enablePageTransitions){
                     appStatus.pageTag.addEventListener("webkitTransitionEnd", transEnd);
@@ -2064,23 +2060,19 @@ Description : This facilitates the router of the framework
     }
 
      function transEnd(elem) {
-       elem.removeEventListener("transitionend",transEnd);
-       elem.removeEventListener("webkitTransitionEnd",transEnd);
-       elem.removeEventListener("oTransitionEnd",transEnd);
-       animEndCallback(this, elem);
+       this.removeEventListener("transitionend",transEnd);
+       this.removeEventListener("webkitTransitionEnd",transEnd);
+       this.removeEventListener("oTransitionEnd",transEnd);
+       animEndCallback(this, appStatus.mountingComponent);
        appStatus.shownEventFired = true;
        appStatus.currentComponent.dispatchEvent(gems.capabilities.createEvent("shown"));
     }
 
     function animEndCallback(currElem, newPage) {
         currElem.className = "hidden";
-        if(currElem.remove){
-            currElem.remove();
-        }
-        else if(currElem.parentElement){
-            currElem.parentElement.removeChild(currElem);
-        }
         
+        removePrevComponents(newPage);
+
         newPage.className = "page " + appStatus.currentComponent.tagName.toLowerCase();
         appStatus.pageTag = newPage;
         gems.Dispatcher.trigger("veronica:stateTransitionComplete", appStatus.currentState.state);
@@ -2093,6 +2085,26 @@ Description : This facilitates the router of the framework
             return null;
         }
 
+    }
+
+    function removePrevComponents(currComponent){
+        var viewTags=appStatus.viewTag.childNodes;
+        var tegRemovalIndex=0;
+        while(viewTags.length>1){
+            var currTag=viewTags[tegRemovalIndex];
+            var currPage=currTag.childNodes[0];
+            if(currTag!==currComponent){
+                if(currTag.remove){
+                    currTag.remove();
+                }
+                else if(currTag.parentElement){
+                    currTag.parentElement.removeChild(currTag);
+                }
+            }
+            else{
+                tegRemovalIndex=tegRemovalIndex+1;
+            }
+        }
     }
 
     veronica.createRoute = createRoute;

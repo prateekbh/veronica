@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		.page.unmount,.page.unmount-pop{
+			opacity: 0;
+			transition-duration: 3000ms;
+		}
+		.page{
+			    transition-duration: 3000ms;
+			    opacity: 1
+		}
+	</style>
+</head>
+<body>
+	<div class="app-body">
+		
+	</div>
+	<script type="text/javascript" src="../../veronica+compiler.js"></script>
+	<script type="riot/tag" src="./tags/page.html"></script>
+	<script type="riot/tag" src="./tags/p1.html"></script>
+	<script type="riot/tag" src="./tags/p2.html"></script>
+	<script type="riot/tag" src="./tags/p3.html"></script>
+	<script type="riot/tag" src="./tags/p4.html"></script>
+	<script>
+		veronica.settings.enablePageTransitions=true;
+		veronica.settings.maxPageTransitionTime=4000;
+
+		veronica.addRoute(veronica.createRoute("home","/$","p1"));
+		veronica.addRoute(veronica.createRoute("p2","/page2","p2"));
+		veronica.addRoute(veronica.createRoute("p3","/page3","p3"));
+
+	</script>
+</body>
+</html>
