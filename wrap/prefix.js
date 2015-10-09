@@ -6,7 +6,8 @@
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,
-            enablePageTransitions:false
+            enablePageTransitions:false,
+            listenPopState:true
         }
     };
 

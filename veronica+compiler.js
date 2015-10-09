@@ -1747,7 +1747,8 @@ riot.mountTo = riot.mount
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,
-            enablePageTransitions:false
+            enablePageTransitions:false,
+            listenPopState:true
         }
     };
 
@@ -2351,15 +2352,14 @@ Description : This facilitates the router of the framework
         loc(url,true);
     }
 
-    window.onpopstate = function(e) {
-        // if(e) because veronica shouldn't intrupt the #changes
-        if (e && e.state) {
+    window.addEventListener("popstate",function(e){
+        if (veronica.settings.listenPopState && e && e.state) {
             if (appStatus.currentState.state.state !== e.state.state) {
                 gems.Dispatcher.trigger("veronica:stateChange", e.state);
             }
             evalRoute(e.state, "mounting-pop", "unmount-pop");
         }
-    };
+    });
 
     function evalRoute(stateObj, pageEnterEffect, pageLeaveEffect) {
         // declare components and states

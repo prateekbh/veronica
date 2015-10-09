@@ -118,10 +118,15 @@ API
 	veronica.loc();
 
 	//get current page url
-	vernocia.getCurrentPath()
+	vernocia.getCurrentPath();
 
 	//get previous page url
-	vernocia.getPrevPageUrl()
+	vernocia.getPrevPageUrl();
+
+	//enable or disable popstate listener in veronica router
+	veronica.settings.listenPopState=true;
+	or
+	veronica.settings.listenPopState=false;
 ```
 ### Veronica Promises
 The promises object gives u a way to create $q promises the new new constructer.
@@ -152,6 +157,7 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 - 0.6.5		Global Ajax and Data setter and getter
 - 0.6.6		HTML remove function bug fix
 - 0.7.0		Enabling page transitions
+- 0.7.1		Switch for Pop State listener to default veronica router
 
 
 
