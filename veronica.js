@@ -1974,6 +1974,7 @@ Description : This facilitates the router of the framework
                         routeData.component = route.component;
                         routeData.data = route.data;
                         routeData.url = route.url;
+                        routeData.state = route.state;
 
                         if (appStatus.currentState.name === "") {
                             history.replaceState(routeData, "", newRoute);

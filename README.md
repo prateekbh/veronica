@@ -171,6 +171,7 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 - 0.7.0		Enabling page transitions
 - 0.7.1		Switch for Pop State listener to default veronica router
 - 0.8.0		Regex free router
+- 0.8.1		Push state data bug fix
 
 
 
