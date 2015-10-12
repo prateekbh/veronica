@@ -99,7 +99,7 @@ this.Dispatcher.trigger("eventname",{data})
 ```
 
 ### Veronica Router
-Veronica comes with a push state router, allowing you to handle your urls without the hashbang problem
+Veronica comes with a push state router, allowing you to handle your urls without the hashbang.
 
 API
 
@@ -120,6 +120,13 @@ API
 	//get current page url
 	vernocia.getCurrentPath();
 
+	//get current state.
+	vernocia.getCurrentState();
+
+	//route params and there value
+	vernocia.getCurrentState().data;
+
+
 	//get previous page url
 	vernocia.getPrevPageUrl();
 
@@ -127,6 +134,11 @@ API
 	veronica.settings.listenPopState=true;
 	or
 	veronica.settings.listenPopState=false;
+
+	//sample routes
+	/person/:pid
+	/account/:aid/:pid => /account/123/p26 =>	{aid:"123",pid:"p26"}
+
 ```
 ### Veronica Promises
 The promises object gives u a way to create $q promises the new new constructer.
@@ -158,6 +170,7 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 - 0.6.6		HTML remove function bug fix
 - 0.7.0		Enabling page transitions
 - 0.7.1		Switch for Pop State listener to default veronica router
+- 0.8.0		Regex free router
 
 
 
