@@ -96,4 +96,45 @@ describe('Veronica Test Suite => ', function() {
             });
         });
     });
+
+    describe('Veronica Utils defination test: ', function() {
+       it("Check Router Functions", function(done) {
+           check(done, function() {
+               expect(veronica.addRoute).to.be.a("Function");
+               expect(veronica.createRoute).to.be.a("Function");
+               expect(veronica.getCurrentPath).to.be.a("Function");
+               expect(veronica.getCurrentState).to.be.a("Function");
+               expect(veronica.getPrevPageUrl).to.be.a("Function");
+               expect(veronica.loc).to.be.a("Function");
+               expect(veronica.version).to.be.a("String");
+           });
+       });
+    });
+
+    // describe('Check Dispatcher funnctionality from actions to stores', function() {
+    //     var SenderAction = function() {
+    //         this.sendSignal = function(){
+    //             this.Dispatcher.trigger("TestAction:sendevent",{data:"sample data"});
+    //         }
+    //     };
+    //     veronica.flux.Actions.createAction("SenderAction", SenderAction);
+
+    //     var SenderAction = function() {
+    //         this.sendSignal = function(){
+    //             this.Dispatcher.trigger("TestAction:sendevent",{data:"sample data"});
+    //         }
+    //     };
+    //     veronica.flux.Actions.createAction("SenderAction", SenderAction);
+    //     it("Check Router Functions", function(done) {
+    //         check(done, function() {
+    //             expect(veronica.addRoute).to.be.a("Function");
+    //             expect(veronica.createRoute).to.be.a("Function");
+    //             expect(veronica.getCurrentPath).to.be.a("Function");
+    //             expect(veronica.getCurrentState).to.be.a("Function");
+    //             expect(veronica.getPrevPageUrl).to.be.a("Function");
+    //             expect(veronica.loc).to.be.a("Function");
+    //             expect(veronica.version).to.be.a("String");
+    //         });
+    //     });
+    // });
 });

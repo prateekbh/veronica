@@ -1373,7 +1373,7 @@ riot.mountTo = riot.mount
     "use strict";
 
     var veronica = {
-        version: "v0.6.6",
+        version: "v0.8.2",
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,
@@ -2080,8 +2080,15 @@ Description : This facilitates the router of the framework
                     appStatus.viewTag.appendChild(elem);
 
                 } else {
+                    var page=appStatus.viewTag.children&&appStatus.viewTag.children[0];
+                    var tag=page&&page.children&&page.children[0];
+                    if(tag._tag&&tag._tag.isMounted){
+                      tag._tag.unmount()
+                    }
+                    
                     var newComponent = appStatus.currentComponent.tagName.toLowerCase();
                     var newTag = "<div class='page " + newComponent + "'>" + "<" + newComponent + "></" + newComponent + ">" + "</div>";
+
                     appStatus.viewTag.innerHTML = newTag;
                 }
             } else {

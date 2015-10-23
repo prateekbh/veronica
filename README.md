@@ -165,7 +165,7 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 - 0.0.1		Basic APIs + push-state router to work with different components
 - 0.5.0		Introduced Flux architecture and segregated API for different components
 - 0.6.0		Introduced switch for page transitioning 
-- 0.6.1,0.6.2	 Minor bug fixes
+- 0.6.1,0.6.2	Minor bug fixes
 - 0.6.3	 	Adding replaceLocation functionality to router
 - 0.6.4		Store and action creation name api change
 - 0.6.5		Global Ajax and Data setter and getter
@@ -174,6 +174,7 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 - 0.7.1		Switch for Pop State listener to default veronica router
 - 0.8.0		Regex free router
 - 0.8.1		Push state data bug fix
+- 0.8.2		Unmount bug fix
 
 
 
