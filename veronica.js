@@ -1373,7 +1373,7 @@ riot.mountTo = riot.mount
     "use strict";
 
     var veronica = {
-        version: "v0.8.2",
+        version: "v0.9.0",
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,
@@ -1682,7 +1682,7 @@ Description : This facilitates a mock sizzle selector
         try {
             xhr = new_xhr();
         } catch (e) {
-            p.reject(veronicaAjax.ENOXHR);
+            p.reject(veronicaAjax.ENOXHR,"AJAX:ABSENT");
             return p;
         }
 
@@ -1705,8 +1705,8 @@ Description : This facilitates a mock sizzle selector
         }
 
         function onTimeout() {
+            p.reject(veronicaAjax.ETIMEOUT, "AJAX:TIMEOUT", xhr);
             xhr.abort();
-            p.reject(veronicaAjax.ETIMEOUT, "", xhr);
         }
 
         var timeout = veronicaAjax.ajaxTimeout;
@@ -1757,6 +1757,12 @@ Description : This facilitates a mock sizzle selector
         return globalData;
     }
 
+    function setAjaxTimeout(timeout){
+        if(typeof timeout==="number"){
+            veronicaAjax.ajaxTimeout=timeout;
+        }
+    }
+
     var veronicaAjax = {
         ajax: ajax,
         get: _ajaxer("GET"),
@@ -1789,6 +1795,7 @@ Description : This facilitates a mock sizzle selector
 
     //global ajax funtions
     gems.httpGlobal={};
+    gems.httpGlobal.setAjaxTimeout=setAjaxTimeout;
     gems.httpGlobal.getGlobalHeaders=getGlobalHeaders;
     gems.httpGlobal.setGlobalHeaders=setGlobalHeaders;
     gems.httpGlobal.getGlobalData=getGlobalData;

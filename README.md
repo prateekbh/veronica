@@ -175,10 +175,10 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 - 0.8.0		Regex free router
 - 0.8.1		Push state data bug fix
 - 0.8.2		Unmount bug fix
+- 0.9.0		Ajax enhancements
 
 
 
 ### Roadmap to 1.0
 Our roadmap to a 1.0 version currently includes introding the following stuff in the framework
 - A good amount of test coverage
-- Regex free routers
