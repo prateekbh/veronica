@@ -1,6 +1,6 @@
 {
   "name": "veronica-x",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "author": "Prateek Bhatnagar <prateek89born@gmail.com>",
   "private": false,
   "scripts": {
@@ -13,7 +13,7 @@
     "url": "git@github.com:prateekbh/veronica.git"
   },
   "dependencies": {
-    "riot": "^2.2.4"
+    "riot": "2.2.4"
   },
   "devDependencies": {
     "grunt": "~0.4.0",

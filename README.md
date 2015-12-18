@@ -176,6 +176,7 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 - 0.8.1		Push state data bug fix
 - 0.8.2		Unmount bug fix
 - 0.9.0		Ajax enhancements
+- 0.9.1		Strict versioning of node modules
 
 
 
