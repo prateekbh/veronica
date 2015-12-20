@@ -1,4 +1,4 @@
-1..10
+1..11
 ok 1 Veronica Test Suite =>  Namespace test:  Actions are there
 ok 2 Veronica Test Suite =>  Namespace test:  Stores are there
 ok 3 Veronica Test Suite =>  Namespace test:  Actions functions are there
@@ -9,6 +9,7 @@ ok 7 Veronica Test Suite =>  Action defination test:  Action should have Dispatc
 ok 8 Veronica Test Suite =>  Action defination test:  Action should have Ajax capabilities
 ok 9 Veronica Test Suite =>  Action defination test:  Action should have Promises
 ok 10 Veronica Test Suite =>  Veronica Utils defination test:  Check Router Functions
-# tests 10
-# pass 10
+ok 11 Veronica Test Suite =>  Check Dispatcher functionality from actions to stores Check Router Functions
+# tests 11
+# pass 11
 # fail 0

@@ -25,13 +25,13 @@ Actions in veronica/flux are meant to perform jobs, api calls, perform async fun
 Creating an Action
 ```
  function ItemActions(){
- 	this.addItem(item){
- 		this.Dispatcher.trigger("item:action",{data:item});
- 	}
+    this.addItem(item){
+        this.Dispatcher.trigger("item:action",{data:item});
+    }
  }
 
 //creating an action
- veronica.flux.Actions.createAction("ItemActions",ItemActions);	
+ veronica.flux.Actions.createAction("ItemActions",ItemActions); 
 
  //accessing inside a view
  var itemActionObj=veronica.flux.Actions.getAction("ItemActions");
@@ -43,14 +43,14 @@ Actions in veronica have inbuilt Ajax capabilities.
 
 Ajax Usage in actions
 ```
-	function ItemActions(){
-		this.fetchItemDetails(itemid){
-			//this.http object exposes get/post/delete/put methods
-			this.http.get(url+"?id="+itemid).success(function(res){
-				this.Dispatcher.trigger("item:detail",{data:res});
-			})
-		}
-	}
+    function ItemActions(){
+        this.fetchItemDetails(itemid){
+            //this.http object exposes get/post/delete/put methods
+            this.http.get(url+"?id="+itemid).success(function(res){
+                this.Dispatcher.trigger("item:detail",{data:res});
+            })
+        }
+    }
 ```
 
 P.S. Only Actions can/should perform Ajax in veronica
@@ -61,28 +61,28 @@ Stores in veronica/flux are the data stores that expose data getters and have th
 Creating a Store
 ```
 function ItemStores(){
-	var _shoppingList=[];
+    var _shoppingList=[];
 
-	this.Dispatcher.register("item:action",addItemToList);
+    this.Dispatcher.register("item:action",addItemToList);
 
-	this.getItems=function(){
-		return _shoppingList;
-	}
+    this.getItems=function(){
+        return _shoppingList;
+    }
 
-	this.addItemToList=function(data){
-		_shoppingList.push(data.item);
-	}
+    this.addItemToList=function(data){
+        _shoppingList.push(data.item);
+    }
 
-	this.removeAddItemListener=function(data){
-		this.Dispatcher.unregister("item:action",addItemToList);	//removing a listener
-	}
+    this.removeAddItemListener=function(data){
+        this.Dispatcher.unregister("item:action",addItemToList);    //removing a listener
+    }
 }
 
 //creating an store
-veronica.flux.Stores.createStore("ItemStores",ItemStores);	
+veronica.flux.Stores.createStore("ItemStores",ItemStores);  
 
  //accessing inside a view
- var itemStoreObj=veronica.flux.Stores.getStore("ItemStores");	//this will be a sigle
+ var itemStoreObj=veronica.flux.Stores.getStore("ItemStores");  //this will be a sigle
 this.items=itemStoreObj.getItems();
 ```
 
@@ -106,40 +106,40 @@ Veronica comes with a push state router, allowing you to handle your urls withou
 API
 
 ```
-	//creating a route object
-	var routeObj=veronica.createRoute(stateName, urlRegex, componentToMount);
+    //creating a route object
+    var routeObj=veronica.createRoute(stateName, urlRegex, componentToMount);
 
-	//adding a route
-	veronica.addRoute(routeObj);
+    //adding a route
+    veronica.addRoute(routeObj);
 
-	//navigating to urls
-	veronica.loc("url to go to");
-	veronica.replaceLoc("url to go to");	//replace state
+    //navigating to urls
+    veronica.loc("url to go to");
+    veronica.replaceLoc("url to go to");    //replace state
 
-	//acessing current location data
-	veronica.loc();
+    //acessing current location data
+    veronica.loc();
 
-	//get current page url
-	vernocia.getCurrentPath();
+    //get current page url
+    vernocia.getCurrentPath();
 
-	//get current state.
-	vernocia.getCurrentState();
+    //get current state.
+    vernocia.getCurrentState();
 
-	//route params and there value
-	vernocia.getCurrentState().data;
+    //route params and there value
+    vernocia.getCurrentState().data;
 
 
-	//get previous page url
-	vernocia.getPrevPageUrl();
+    //get previous page url
+    vernocia.getPrevPageUrl();
 
-	//enable or disable popstate listener in veronica router
-	veronica.settings.listenPopState=true;
-	or
-	veronica.settings.listenPopState=false;
+    //enable or disable popstate listener in veronica router
+    veronica.settings.listenPopState=true;
+    or
+    veronica.settings.listenPopState=false;
 
-	//sample routes
-	/person/:pid
-	/account/:aid/:pid => /account/123/p26 =>	{aid:"123",pid:"p26"}
+    //sample routes
+    /person/:pid
+    /account/:aid/:pid => /account/123/p26 =>   {aid:"123",pid:"p26"}
 
 ```
 ### Veronica Promises
@@ -162,21 +162,21 @@ Now upon state change outgoing state is given class "unmount/unmount-pop" and in
 Please use CSS3 Transitions upon these classes to put exit and entry animations of the various components.
 
 ### Changelog
-- 0.0.1		Basic APIs + push-state router to work with different components
-- 0.5.0		Introduced Flux architecture and segregated API for different components
-- 0.6.0		Introduced switch for page transitioning 
-- 0.6.1,0.6.2	Minor bug fixes
-- 0.6.3	 	Adding replaceLocation functionality to router
-- 0.6.4		Store and action creation name api change
-- 0.6.5		Global Ajax and Data setter and getter
-- 0.6.6		HTML remove function bug fix
-- 0.7.0		Enabling page transitions
-- 0.7.1		Switch for Pop State listener to default veronica router
-- 0.8.0		Regex free router
-- 0.8.1		Push state data bug fix
-- 0.8.2		Unmount bug fix
-- 0.9.0		Ajax enhancements
-- 0.9.1		Strict versioning of node modules
+- 0.0.1     Basic APIs + push-state router to work with different components
+- 0.5.0     Introduced Flux architecture and segregated API for different components
+- 0.6.0     Introduced switch for page transitioning 
+- 0.6.1,0.6.2   Minor bug fixes
+- 0.6.3     Adding replaceLocation functionality to router
+- 0.6.4     Store and action creation name api change
+- 0.6.5     Global Ajax and Data setter and getter
+- 0.6.6     HTML remove function bug fix
+- 0.7.0     Enabling page transitions
+- 0.7.1     Switch for Pop State listener to default veronica router
+- 0.8.0     Regex free router
+- 0.8.1     Push state data bug fix
+- 0.8.2     Unmount bug fix
+- 0.9.0     Ajax enhancements
+- 0.9.1     Strict versioning of node modules
 
 
 
