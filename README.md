@@ -23,7 +23,7 @@ Actions and Stores have functions createActions/createStores and getAction/getSt
 Actions in veronica/flux are meant to perform jobs, api calls, perform async functions etc. and send the processed data to the '[./lib/dispatcher.js](Dispatcher)'
 
 Creating an Action
-```
+```js
  function ItemActions(){
     this.addItem(item){
         this.Dispatcher.trigger("item:action",{data:item});
@@ -42,15 +42,15 @@ itemActionObj.addItem("my shopping item");
 Actions in veronica have inbuilt Ajax capabilities.
 
 Ajax Usage in actions
-```
-    function ItemActions(){
-        this.fetchItemDetails(itemid){
-            //this.http object exposes get/post/delete/put methods
-            this.http.get(url+"?id="+itemid).success(function(res){
-                this.Dispatcher.trigger("item:detail",{data:res});
-            })
-        }
-    }
+```js
+	function ItemActions(){
+		this.fetchItemDetails(itemid){
+			//this.http object exposes get/post/delete/put methods
+			this.http.get(url+"?id="+itemid).success(function(res){
+				this.Dispatcher.trigger("item:detail",{data:res});
+			})
+		}
+	}
 ```
 
 P.S. Only Actions can/should perform Ajax in veronica
@@ -59,7 +59,7 @@ P.S. Only Actions can/should perform Ajax in veronica
 Stores in veronica/flux are the data stores that expose data getters and have the capability to listen to events on '[./lib/dispatcher.js](Dispatcher)'.
 
 Creating a Store
-```
+```js
 function ItemStores(){
     var _shoppingList=[];
 
@@ -90,7 +90,7 @@ this.items=itemStoreObj.getItems();
 Actions and Stores in veronica have access to different access to specific APIs of Dispatcher so as to maintain the unidirectional flow of data.
 
 Dispatcher has following 4 APIs
-```
+```js
 //only present in Stores
 this.Dispatcher.register("eventname",callback)
 this.Dispatcher.unregister("eventname",callback)
@@ -105,10 +105,7 @@ Veronica comes with a push state router, allowing you to handle your urls withou
 
 API
 
-```
-    //creating a route object
-    var routeObj=veronica.createRoute(stateName, urlRegex, componentToMount);
-
+```js
     //adding a route
     veronica.addRoute(routeObj);
 
@@ -152,7 +149,7 @@ Veronica under its two namespaces DS/Session wraps localStorage and sessionStora
 
 ### Page Transitions
 To enable page transition animations do the following two lines of code
-```
+```js
 veronica.settings.enablePageTransitions=true;
 veronica.settings.maxPageTransitionTime=300;
 ```
