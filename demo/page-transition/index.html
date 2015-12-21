@@ -1,36 +1,88 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title></title>
-	<style>
-		.page.unmount,.page.unmount-pop{
-			opacity: 0;
-			transition-duration: 3000ms;
-		}
-		.page{
-			    transition-duration: 3000ms;
-			    opacity: 1
-		}
-	</style>
+    <title></title>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .page.unmount,
+    .page.unmount-pop {
+        opacity: 0;
+        transition-duration: 300ms;
+    }
+
+    .mounting{
+     opacity: 0;
+     transition-duration: 300ms;   
+    }
+    
+    .page.p2.unmount{
+        opacity: 1;
+        transform:translateY(-100vh);
+    }
+
+    .page.p3.unmount{
+        opacity: 1;
+        transform:translateX(-100vh);
+    }
+
+    page {
+        transition-duration: 300ms;
+        opacity: 1;
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+    }
+    
+    p1 page {
+        background-color: tomato;
+    }
+    p2 page {
+        background-color: aliceblue;
+    }
+    p3 page {
+        background-color: gray;
+    }
+
+    .text{
+        position: absolute;
+        background-color: rgba(240,240,240,0.7);
+        top:0;
+        bottom: 0;
+        left: 0;
+        right:0;
+        margin: auto;
+        padding: 5px;
+        border-radius: 15px;
+        width: 100px;
+        height: 25px;
+        text-align: center;
+    }
+    </style>
 </head>
+
 <body>
-	<div class="app-body">
-		
-	</div>
-	<script type="text/javascript" src="../../veronica+compiler.js"></script>
-	<script type="riot/tag" src="./tags/page.html"></script>
-	<script type="riot/tag" src="./tags/p1.html"></script>
-	<script type="riot/tag" src="./tags/p2.html"></script>
-	<script type="riot/tag" src="./tags/p3.html"></script>
-	<script type="riot/tag" src="./tags/p4.html"></script>
-	<script>
-		veronica.settings.enablePageTransitions=true;
-		veronica.settings.maxPageTransitionTime=4000;
+    <div class="app-body">
+    </div>
+    <script type="text/javascript" src="../../veronica+compiler.js"></script>
+    <script type="riot/tag" src="./tags/page.html"></script>
+    <script type="riot/tag" src="./tags/p1.html"></script>
+    <script type="riot/tag" src="./tags/p2.html"></script>
+    <script type="riot/tag" src="./tags/p3.html"></script>
+    <script type="riot/tag" src="./tags/p4.html"></script>
+    <script>
+    veronica.settings.enablePageTransitions = true;
+    veronica.settings.maxPageTransitionTime = 300;
 
-		veronica.addRoute(veronica.createRoute("home","/$","p1"));
-		veronica.addRoute(veronica.createRoute("p2","/page2","p2"));
-		veronica.addRoute(veronica.createRoute("p3","/page3","p3"));
-
-	</script>
+    veronica.addRoute(veronica.createRoute("home", "/demo/page-transition/", "p1"));
+    veronica.addRoute(veronica.createRoute("p2", "/page2", "p2"));
+    veronica.addRoute(veronica.createRoute("p3", "/page3", "p3"));
+    veronica.addRoute(veronica.createRoute("p4", "/page4", "p4"));
+    </script>
 </body>
+
 </html>
