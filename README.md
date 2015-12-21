@@ -8,10 +8,9 @@
 Veronica ❤ [Riot](http://riotjs.com/)
 
 Veronica JS is a framework to Riot JS library.
-Based on Facebook's flux architecture this framework is focused but is not restricted to Mobile web, with its slim size and entirity in nature we tend to make mobile web a delightful experience again.
+Based on Facebook's flux architecture this framework is focused but not restricted to Mobile web. With its slim size and entirity in nature we tend to make mobile web a delightful experience again.
 
-In footsteps of [flux](https://facebook.github.io/flux/docs/overview.html) framework, veronica boots itself with a singleton dispatcher and ability to create singleton stores and actions(can have multiple instances).
-
+In footsteps of [flux](https://facebook.github.io/flux/docs/overview.html) framework, veronica boots itself with a singleton dispatcher and ability to create singleton stores and actions (can have multiple instances).
 
 
 ### Veronica Flux namespace
@@ -24,33 +23,32 @@ Actions in veronica/flux are meant to perform jobs, api calls, perform async fun
 
 Creating an Action
 ```js
- function ItemActions(){
+function ItemActions(){
     this.addItem(item){
         this.Dispatcher.trigger("item:action",{data:item});
     }
- }
+}
 
 //creating an action
- veronica.flux.Actions.createAction("ItemActions",ItemActions); 
+veronica.flux.Actions.createAction("ItemActions",ItemActions); 
 
- //accessing inside a view
- var itemActionObj=veronica.flux.Actions.getAction("ItemActions");
+//accessing inside a view
+var itemActionObj=veronica.flux.Actions.getAction("ItemActions");
 itemActionObj.addItem("my shopping item");
-
 ```
 
 Actions in veronica have inbuilt Ajax capabilities.
 
 Ajax Usage in actions
 ```js
-	function ItemActions(){
-		this.fetchItemDetails(itemid){
-			//this.http object exposes get/post/delete/put methods
-			this.http.get(url+"?id="+itemid).success(function(res){
-				this.Dispatcher.trigger("item:detail",{data:res});
-			})
-		}
+function ItemActions(){
+	this.fetchItemDetails(itemid){
+		//this.http object exposes get/post/delete/put methods
+		this.http.get(url+"?id="+itemid).success(function(res){
+			this.Dispatcher.trigger("item:detail",{data:res});
+		})
 	}
+}
 ```
 
 P.S. Only Actions can/should perform Ajax in veronica
@@ -61,21 +59,21 @@ Stores in veronica/flux are the data stores that expose data getters and have th
 Creating a Store
 ```js
 function ItemStores(){
-    var _shoppingList=[];
+	var _shoppingList=[];
 
-    this.Dispatcher.register("item:action",addItemToList);
+	this.Dispatcher.register("item:action",addItemToList);
 
-    this.getItems=function(){
-        return _shoppingList;
-    }
+	this.getItems=function(){
+		return _shoppingList;
+	}
 
-    this.addItemToList=function(data){
-        _shoppingList.push(data.item);
-    }
+	this.addItemToList=function(data){
+		_shoppingList.push(data.item);
+	}
 
-    this.removeAddItemListener=function(data){
-        this.Dispatcher.unregister("item:action",addItemToList);    //removing a listener
-    }
+	this.removeAddItemListener=function(data){
+		this.Dispatcher.unregister("item:action",addItemToList);    //removing a listener
+	}
 }
 
 //creating an store
@@ -106,49 +104,48 @@ Veronica comes with a push state router, allowing you to handle your urls withou
 API
 
 ```js
-    //adding a route
-    veronica.addRoute(routeObj);
+//adding a route
+veronica.addRoute(routeObj);
 
-    //navigating to urls
-    veronica.loc("url to go to");
-    veronica.replaceLoc("url to go to");    //replace state
+//navigating to urls
+veronica.loc("url to go to");
+veronica.replaceLoc("url to go to");    //replace state
 
-    //acessing current location data
-    veronica.loc();
+//access current location data
+veronica.loc();
 
-    //get current page url
-    vernocia.getCurrentPath();
+//get current page url
+vernocia.getCurrentPath();
 
-    //get current state.
-    vernocia.getCurrentState();
+//get current state.
+vernocia.getCurrentState();
 
-    //route params and there value
-    vernocia.getCurrentState().data;
+//route params and their values
+vernocia.getCurrentState().data;
 
 
-    //get previous page url
-    vernocia.getPrevPageUrl();
+//get previous page url
+vernocia.getPrevPageUrl();
 
-    //enable or disable popstate listener in veronica router
-    veronica.settings.listenPopState=true;
-    or
-    veronica.settings.listenPopState=false;
+//enable or disable popstate listener in veronica router
+veronica.settings.listenPopState=true;
+//or
+veronica.settings.listenPopState=false;
 
-    //sample routes
-    /person/:pid
-    /account/:aid/:pid => /account/123/p26 =>   {aid:"123",pid:"p26"}
-
+//sample routes
+/person/:pid
+/account/:aid/:pid => /account/123/p26 =>   {aid:"123",pid:"p26"}
 ```
 ### Veronica Promises
-The promises object gives u a way to create $q promises the new new constructer.
-You resolve/reject these promises and call backs  are registered with .success or .error
+The `Promise` object gives you a way to create `$q` promises the new constructer.
+You resolve/reject these promises and callbacks are registered with `.success` or `.error`
 
 ### Veronica Storage
 This feature is only available for stores
-Veronica under its two namespaces DS/Session wraps localStorage and sessionStorage respectivly, this not only allows session storage to be working even where it is not present but we plan to expose library which can be used to push data to either localstorage/indexedDB without changing the API structure.
+Veronica under its two namespaces DS/Session wraps localStorage and sessionStorage respectively, this not only allows session storage to be working even where it is not present but we plan to expose library which can be used to push data to either localstorage/indexedDB without changing the API structure.
 
 ### Page Transitions
-To enable page transition animations do the following two lines of code
+To enable page transition animations add the following two lines of code
 ```js
 veronica.settings.enablePageTransitions=true;
 veronica.settings.maxPageTransitionTime=300;
@@ -180,3 +177,4 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 ### Roadmap to 1.0
 Our roadmap to a 1.0 version currently includes introding the following stuff in the framework
 - A good amount of test coverage
+- Proper documentation
