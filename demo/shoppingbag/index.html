@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Shopping store</title>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .page.unmount,
+    .page.unmount-pop {
+        opacity: 0;
+        transition-duration: 300ms;
+    }
+
+    .mounting{
+     opacity: 0;
+     transition-duration: 300ms;   
+    }
+
+    .hometag.unmount h1{
+        opacity: 0;
+        transform:translateY(-50px);
+        transition-duration: 300ms;   
+    }
+
+
+
+    </style>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+</head>
+
+<body>
+    <div class="app-body">
+        <h1>Loading</h1>
+    </div>
+
+    <script type="text/javascript" src="./veronica+compiler.js"></script>
+    <!-- loading actions -->
+    <script src="./scripts/CartAction.js"></script>
+    <!-- loading stores -->
+    <script src="./scripts/CartStore.js"></script>
+    <script src="./scripts/ProductStore.js"></script>
+    <!-- loading tags -->
+    <script type="riot/tag" src="./tags/home.html"></script>
+    <script type="riot/tag" src="./tags/browse.html"></script>
+    <script type="riot/tag" src="./tags/product.html"></script>
+    <script>
+    veronica.settings.enablePageTransitions = true;
+    veronica.settings.maxPageTransitionTime = 300;
+
+    veronica.addRoute(veronica.createRoute("home", "/", "hometag"));
+    veronica.addRoute(veronica.createRoute("browse", "/browse", "browsetag"));
+    // veronica.addRoute(veronica.createRoute("product", "/product/:pid", "producttag"));
+    // veronica.addRoute(veronica.createRoute("cart", "/cart", "carttag"));
+    </script>
+</body>
+
+</html>

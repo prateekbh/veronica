@@ -1,0 +1,84 @@
+<product>
+    <style scoped>
+    .product {
+        display: table;
+        width: 100%;
+        border-bottom: 1px solid #aaa;
+        margin-bottom: 10px;
+    }
+    
+    .image,
+    .info {
+        display: table-cell;
+        vertical-align: top;
+    }
+    
+    .add {
+        display: inline-block;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+    
+    h2,
+    h3 {
+        padding: 0px;
+        margin: 0px;
+    }
+    
+    .image {
+        width: 50px;
+        padding: 5px;
+    }
+    
+    .subheading {
+        display: inline-block;
+    }
+    
+    .add {
+        float: right;
+        margin-right: 20px;
+    }
+    </style>
+    <div class="product">
+        <div class="image">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="50" viewBox="0 0 24 24" width="50">
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M17.21 9l-4.38-6.56c-.19-.28-.51-.42-.83-.42-.32 0-.64.14-.83.43L6.79 9H2c-.55 0-1 .45-1 1 0 .09.01.18.04.27l2.54 9.27c.23.84 1 1.46 1.92 1.46h13c.92 0 1.69-.62 1.93-1.46l2.54-9.27L23 10c0-.55-.45-1-1-1h-4.79zM9 9l3-4.4L15 9H9zm3 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
+            </svg>
+        </div>
+        <div class="info">
+            <h2 class="heading">
+                {opts.product.heading}
+            </h2>
+            <h3 class="subheading">
+                {opts.product.subheading}
+            </h3>
+            <div class="add" onclick="{addProduct}">
+                {addedStatus}
+            </div>
+        </div>
+    </div>
+    <script>
+    var self = this;
+    var cartAction;
+    this.on("mount", function() {
+        cartAction=veronica.flux.Actions.getAction("CartAction");
+        this.addedStatus = "Add";
+        this.update();
+    })
+    this.addProduct = function() {
+
+        if(this.addedStatus === "Add"){
+            cartAction.addProductToCart(opts.product);
+            this.addedStatus = "Added";
+            this.update();
+        }
+        else{
+            cartAction.removeProductFromCart(opts.product);
+            this.addedStatus = "Add";
+            this.update();    
+        }
+    }
+    </script>
+</product>
