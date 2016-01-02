@@ -13,7 +13,7 @@ Based on Facebook's flux architecture this framework is focused but is not restr
 In footsteps of [flux](https://facebook.github.io/flux/docs/overview.html) framework, veronica boots itself with a singleton dispatcher and ability to create singleton stores and actions(can have multiple instances).
 
 ### How to use
-With version 0.9.2, Veronica no longer pre-compiles itself with Riot. This means that you are free to use any version of riot you wish for with veronica.
+With version 0.9.2, Veronica no longer pre-compiles itself with Riot. This means that you are free to use any version of Riot you wish for with veronica.
 Current we are tesing a no. of Riot's versions with Veronica all successfully working version's list will be update soon
 
 ```html

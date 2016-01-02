@@ -55,6 +55,11 @@ module.exports = function(grunt) {
                         src: ['./veronica.js'],
                         dest: './demo/page-transition/'
                     },
+                    {
+                        expand: true,
+                        src: ['./veronica.js'],
+                        dest: './demo/shoppingbag/'
+                    }
                 ]
             }
         }
