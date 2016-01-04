@@ -1,4 +1,5 @@
-[![Build Status][https://api.travis-ci.org/prateekbh/veronica.svg?branch=master&style=flat-square]][https://travis-ci.org/prateekbh/veronica]
+
+![Build Status](https://api.travis-ci.org/prateekbh/veronica.svg?branch=master&style=flat-square)
 
 # Veronica JS
 Veronica ❤ [Riot](http://riotjs.com/)
@@ -50,14 +51,14 @@ Actions in veronica have inbuilt Ajax capabilities.
 
 Ajax Usage in actions
 ```js
-	function ItemActions(){
-		this.fetchItemDetails(itemid){
-			//this.http object exposes get/post/delete/put methods
-			this.http.get(url+"?id="+itemid).success(function(res){
-				this.Dispatcher.trigger("item:detail",{data:res});
-			})
-		}
-	}
+    function ItemActions(){
+        this.fetchItemDetails(itemid){
+            //this.http object exposes get/post/delete/put methods
+            this.http.get(url+"?id="+itemid).success(function(res){
+                this.Dispatcher.trigger("item:detail",{data:res});
+            })
+        }
+    }
 ```
 
 P.S. Only Actions can/should perform Ajax in veronica
