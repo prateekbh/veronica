@@ -1,8 +1,4 @@
-
-[travis-url]:https://travis-ci.org/prateekbh/veronica
-[travis-image]: https://api.travis-ci.org/prateekbh/veronica.svg?branch=master&style=flat-square
-
-[![Build Status][travis-image]][travis-url]
+[![Build Status][https://api.travis-ci.org/prateekbh/veronica.svg?branch=master&style=flat-square]][https://travis-ci.org/prateekbh/veronica]
 
 # Veronica JS
 Veronica ❤ [Riot](http://riotjs.com/)

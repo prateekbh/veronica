@@ -287,6 +287,7 @@ Description : This facilitates a mock sizzle selector
             try {
                 xhr = new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
+                console.log(e);
                 xhr = new ActiveXObject("Microsoft.XMLHTTP");
             }
         }
@@ -311,6 +312,7 @@ Description : This facilitates a mock sizzle selector
         try {
             xhr = new_xhr();
         } catch (e) {
+            console.log(e);
             p.reject(veronicaAjax.ENOXHR,"AJAX:ABSENT");
             return p;
         }
@@ -817,6 +819,7 @@ Description : This is the base class
             return true;
         }
         catch(e){
+            console.log(e)
             return false;
         }
     }
@@ -862,6 +865,7 @@ Description : This is the base class for stores
             stores[storeName] = new klass();
             return true;
         } catch (e) {
+            console.log(e);
             return false;
         }
     }
