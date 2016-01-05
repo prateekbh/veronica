@@ -1,0 +1,49 @@
+<results>
+    <div class="mui-panel" style="margin-top:10px;">
+        <div class="mui-row">
+            <div class="mui-col-md-12"><div class="mui--text-display1">Picked Task</div></div>
+        </div>
+    <div>
+        <task each="{mitem in markedTasks}" mode="readonly" label="{mitem}"></task>
+    </div>
+
+        <div class="mui-row">
+            <div class="mui-col-md-12"><div class="mui--text-display1x">Unpicked Task</div></div>
+        </div>
+    <div>
+        <task each="{umitem in unMarkedTasks}" mode="readonly" label="{umitem}"></task>
+    </div>
+    </div>
+    <script>
+
+        var taskStore=veronica.flux.Stores.getStore("TasksStore");
+
+
+        this.on("mount",function(){
+            this.markedTasks=[];
+            this.unMarkedTasks=[];
+            this.updateTasks();
+        });
+
+        this.on("unmount",function(){
+        });
+
+
+        updateTasks(){
+            var _self=this;
+            this.markedTasks=[];
+            this.unMarkedTasks=[];
+            taskStore.getMarkedTasks().map(function(i){
+                _self.markedTasks.push(i.label);
+                _self.update();
+            });
+
+            taskStore.getUnmarkedTasks().map(function(i){
+                _self.unMarkedTasks.push(i.label);
+                _self.update();
+            });
+        }
+
+    </script>
+
+</results>

@@ -1,0 +1,17 @@
+<taskslist>
+    <task each="{item in tasks}" mode="readwrite" label="{item}"></task>
+    <script>
+        var _self=this;
+        this.tasks=[];
+        var taskStore=veronica.flux.Stores.getStore("TasksStore");
+        this.on("mount",function(){
+            _self.tasks=taskStore.getAllTasks().map(function(i){
+                return i.label;
+            });
+            _self.update();
+        });
+
+
+    </script>
+</taskslist>
+

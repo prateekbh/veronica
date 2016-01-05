@@ -1,0 +1,55 @@
+<home>
+    <div class="mui-panel" style="margin-top:10px;">
+    <div class="mui-row">
+        <div class="mui-col-md-12"><div class="mui--text-display2">Add Task</div></div>
+    </div>
+    <ul>
+            <task each="{item in tasks}" mode="readonly" label="{item}"></task>
+    </ul>
+        <form action="#" onsubmit="{addTask}">
+        <div class="mui-row">
+            <div class="mui-col-md-9"><div class="mui-textfield"><input type="text" id="newTask" placeholder="add new task" /></div></div>
+            <div class="mui-col-md-3"><button class="mui-btn mui-btn--primary" id="addNewTask">Add</button></div>
+        </div>
+        </form>
+
+    <div class="mui-row">
+        <div class="mui-col-md-12">
+            <a  class="mui-btn mui-btn--danger" style="float: right;" href="/picker">Pick task</a>
+        </div>
+    </div>
+    </div>
+    <script>
+
+        var taskAction=veronica.flux.Actions.getAction("TasksAction");
+        var taskStore=veronica.flux.Stores.getStore("TasksStore");
+        this.tasks=[];
+        this.on("mount",function(){
+
+            this.updateTasks();
+            taskStore.subscribe("task:added",this.updateTasks);
+        });
+
+        this.on("unmount",function(){
+            taskStore.unsubscribe("task:added",this.updateTasks);
+        });
+
+         addTask(e){
+            var newTask = document.querySelector("#newTask");
+            taskAction.addTask(newTask.value);
+            newTask.value = "";
+            return false;
+        }
+
+
+        updateTasks(){
+            var _self=this;
+            this.tasks=[];
+            taskStore.getAllTasks().map(function(i){
+                _self.tasks.push(i.label);
+                _self.update();
+            });
+        }
+
+    </script>
+</home>

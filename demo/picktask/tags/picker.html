@@ -1,0 +1,35 @@
+<picker>
+    <div class="mui-panel" style="margin-top:10px;">
+    <div class="mui-row">
+        <div class="mui-col-md-12"><div class="mui--text-display2">Pick Task</div></div>
+    </div>
+    <ul>
+        <taskslist></taskslist>
+        <!--<taskslist mode="readwrite"></taskslist>-->
+    </ul>
+        <div class="mui-row">
+            <div class="mui-col-md-12">
+        <button class="mui-btn mui-btn--danger" onclick="{pickTask}" id="pickTask">Save</button>
+    </div>
+        </div>
+    </div>
+
+    <script>
+
+        var taskAction=veronica.flux.Actions.getAction("TasksAction");
+        var taskStore=veronica.flux.Stores.getStore("TasksStore");
+
+        pickTask(){
+            taskStore.resetMarkedUnmarkedTasks();
+            var checkedTask = document.querySelectorAll("task[checked=true]");
+            [].forEach.call(checkedTask, function(eachTask) { //converting queryselectAll node list to array foreach
+                taskAction.markTask(eachTask.getAttribute("label"),true);
+            });
+
+            veronica.loc("/results");
+
+        }
+
+
+    </script>
+</picker>
