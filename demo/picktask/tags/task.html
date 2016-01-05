@@ -1,0 +1,24 @@
+<task>
+    <li>
+    <div if="{opts.mode==='readonly'}" class="{opts.mode}">
+        {opts.label}
+    </div>
+    <label if="{opts.mode==='readwrite'}">
+        <input onchange="{checkVal}"  type="checkbox"> {opts.label}
+    </label>
+    <script>
+        checkVal(e){
+            console.log(e.target.value);
+            console.log(e.target);
+            var chk= e.target;
+            if(e.target.checked){
+                this.root.setAttribute("checked","true");
+            }
+            else{
+                this.root.removeAttribute("checked");
+            }
+
+        }
+    </script>
+    </li>
+</task>
