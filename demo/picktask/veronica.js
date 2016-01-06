@@ -797,7 +797,7 @@ Description : This facilitates the router of the framework
 /*============================
 Author : Prateek Bhatnagar
 Data : 4th-Sept-2015
-Description : This is the base class 
+Description : This is the base class
 =============================*/
 ;(function(veronica, http, Dispatcher, promise) {
     var actions={};
@@ -813,7 +813,7 @@ Description : This is the base class
 
     gems.flux.Actions.createAction=function(actionName,childClass){
         try{
-            actions[actionName]=gems.extender(Action,childClass);    
+            actions[actionName]=gems.extender(Action,childClass);
             return true;
         }
         catch(e){
@@ -824,7 +824,7 @@ Description : This is the base class
     gems.flux.Actions.getAction=function(name){
         var klass=actions[name];
         if(klass){
-            return new klass();    
+            return new klass();
         }
         else{
             return null;

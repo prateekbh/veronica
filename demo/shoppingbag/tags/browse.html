@@ -1,0 +1,35 @@
+<browsetag>
+    <style scoped>
+        .toolbar{
+            background-color: navy;
+            padding: 10px;
+            text-align: center;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        product{
+            display: block;
+        }
+        product:first-child{
+            padding-top: 10px;
+        }
+    </style>
+    <div class="toolbar">Browse</div>
+    <div class="products">
+        <product each={product in products} product="{product}" showadd="true"></product>
+    </div>
+    <fab>
+    </fab>
+    <script>
+        this.products=[];
+        this.on("mount",function(){
+            var cartStore=veronica.flux.Stores.getStore("CartStore");
+            var productStore=veronica.flux.Stores.getStore("ProductStore");
+            cartStore.emptyCart();
+            this.update({
+                products:productStore.getProducts()
+            });
+        })
+
+    </script>
+</browsetag>

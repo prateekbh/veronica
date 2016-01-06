@@ -1,0 +1,85 @@
+<product>
+    <style scoped>
+    .product {
+        display: table;
+        width: 100%;
+        border-bottom: 1px solid #aaa;
+        margin-bottom: 10px;
+    }
+    
+    .image,
+    .info {
+        display: table-cell;
+        vertical-align: top;
+    }
+    
+    .add {
+        display: inline-block;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+    
+    h2,
+    h3 {
+        padding: 0px;
+        margin: 0px;
+    }
+    
+    .image {
+        width: 50px;
+        padding: 5px;
+    }
+    
+    .subheading {
+        display: inline-block;
+    }
+    
+    .add {
+        float: right;
+        margin-right: 20px;
+    }
+    </style>
+    <div class="product">
+        <div class="image">
+            <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=Image&w=50&h=50">
+        </div>
+        <div class="info">
+            <h2 class="heading">
+                {opts.product.heading}
+            </h2>
+            <h3 class="subheading">
+                {opts.product.subheading}
+            </h3>
+            <div if={showAdd} class="add" onclick="{addProduct}">
+                {addedStatus}
+            </div>
+        </div>
+    </div>
+    <script>
+    var self = this;
+    var cartAction;
+    this.showAdd=false;
+    this.on("mount", function() {
+        cartAction=veronica.flux.Actions.getAction("CartAction");
+        this.addedStatus = "Add";
+        if(opts.showadd==="true"){
+            this.showAdd=true;
+        }
+        this.update();
+    })
+    this.addProduct = function() {
+
+        if(this.addedStatus === "Add"){
+            cartAction.addProductToCart(opts.product);
+            this.addedStatus = "Added";
+            this.update();
+        }
+        else{
+            cartAction.removeProductFromCart(opts.product);
+            this.addedStatus = "Add";
+            this.update();    
+        }
+    }
+    </script>
+</product>

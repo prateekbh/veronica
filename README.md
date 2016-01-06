@@ -1,8 +1,5 @@
 
-[travis-url]:https://travis-ci.org/prateekbh/veronica
-[travis-image]: https://api.travis-ci.org/prateekbh/veronica.svg?branch=master&style=flat-square
-
-[![Build Status][travis-image]][travis-url]
+![Build Status](https://api.travis-ci.org/prateekbh/veronica.svg?branch=master&style=flat-square)
 
 # Veronica JS
 Veronica ❤ [Riot](http://riotjs.com/)
@@ -12,6 +9,18 @@ Based on Facebook's flux architecture this framework is focused but not restrict
 
 In footsteps of [flux](https://facebook.github.io/flux/docs/overview.html) framework, veronica boots itself with a singleton dispatcher and ability to create singleton stores and actions (can have multiple instances).
 
+### How to use
+With version 0.9.2, Veronica no longer pre-compiles itself with Riot. This means that you are free to use any version of Riot you wish for with veronica.
+Current we are tesing a no. of Riot's versions with Veronica all successfully working version's list will be update soon
+
+```html
+<!-- to use veronica in your project include riot and veronica in the following order -->
+ <script type="text/javascript" 
+    src="https://cdnjs.cloudflare.com/ajax/libs/riot/X.X.XX/riot.js"></script>
+<script type="text/javascript" 
+    src="path to veronica.js"></script>
+
+```
 
 ### Veronica Flux namespace
 This namespace is the store Actions and Stores classes.
@@ -41,14 +50,14 @@ Actions in veronica have inbuilt Ajax capabilities.
 
 Ajax Usage in actions
 ```js
-function ItemActions(){
-	this.fetchItemDetails(itemid){
-		//this.http object exposes get/post/delete/put methods
-		this.http.get(url+"?id="+itemid).success(function(res){
-			this.Dispatcher.trigger("item:detail",{data:res});
-		})
-	}
-}
+    function ItemActions(){
+        this.fetchItemDetails(itemid){
+            //this.http object exposes get/post/delete/put methods
+            this.http.get(url+"?id="+itemid).success(function(res){
+                this.Dispatcher.trigger("item:detail",{data:res});
+            })
+        }
+    }
 ```
 
 P.S. Only Actions can/should perform Ajax in veronica
@@ -171,6 +180,7 @@ Please use CSS3 Transitions upon these classes to put exit and entry animations 
 - 0.8.2     Unmount bug fix
 - 0.9.0     Ajax enhancements
 - 0.9.1     Strict versioning of node modules
+- 0.9.2     Removing Riot as a pre-compiled dependency
 
 
 

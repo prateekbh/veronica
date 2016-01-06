@@ -1,0 +1,33 @@
+<order>
+	<style scoped>
+	    .toolbar{
+	        background-color: navy;
+	        padding: 10px;
+	        text-align: center;
+	        color: #fff;
+	        text-transform: uppercase;
+	    }
+	    product{
+	        display: block;
+	    }
+	    product:first-child{
+	        padding-top: 10px;
+	    }
+	</style>
+	<div class="toolbar">Items you ordered</div>
+	<div class="products">
+	    <product each={index,product in products} product="{product}"></product>
+	</div>
+	<fab>
+	</fab>
+	<script>
+	    this.products=[];
+	    this.on("mount",function(){
+	        var cartStore=veronica.flux.Stores.getStore("CartStore");
+	        this.update({
+	            products:cartStore.getProductsInCart()
+	        });
+	    })
+
+	</script>
+</order>

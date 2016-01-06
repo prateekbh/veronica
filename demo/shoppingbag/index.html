@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Shopping store</title>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .page.unmount,
+    .page.unmount-pop {
+        opacity: 0;
+        transition-duration: 300ms;
+    }
+
+    .mounting{
+     opacity: 0;
+     transition-duration: 300ms;   
+    }
+
+    .hometag.unmount h1{
+        opacity: 0;
+        transform:translateY(-50px);
+        transition-duration: 300ms;   
+    }
+
+
+
+    </style>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+</head>
+
+<body>
+
+    <div class="page-content app-body"><!-- Router will work here --></div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/riot/2.3.12/riot+compiler.min.js"></script>
+    <script type="text/javascript" src="./veronica.js"></script>
+
+    <!-- loading actions -->
+    <script src="./scripts/CartAction.js"></script>
+    <!-- loading stores -->
+    <script src="./scripts/CartStore.js"></script>
+    <script src="./scripts/ProductStore.js"></script>
+    <!-- loading tags -->
+    <script type="riot/tag" src="./tags/home.html"></script>
+    <script type="riot/tag" src="./tags/browse.html"></script>
+    <script type="riot/tag" src="./tags/product.html"></script>
+    <script type="riot/tag" src="./tags/fab.html"></script>
+    <script type="riot/tag" src="./tags/order.html"></script>
+    <script>
+    veronica.settings.enablePageTransitions = true;
+    veronica.settings.maxPageTransitionTime = 300;
+
+    veronica.addRoute(veronica.createRoute("home", "/", "hometag"));
+    veronica.addRoute(veronica.createRoute("browse", "/browse", "browsetag"));
+    veronica.addRoute(veronica.createRoute("order", "/order", "order"));
+    // veronica.addRoute(veronica.createRoute("product", "/product/:pid", "producttag"));
+    // veronica.addRoute(veronica.createRoute("cart", "/cart", "carttag"));
+    </script>
+</body>
+
+</html>

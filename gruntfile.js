@@ -8,24 +8,6 @@ var compiledMinFile = "./veronica.min.js";
 var compiledMinFile = "./veronica.min.js";
 
 var jsFiles = [
-    "./node_modules/riot/riot.js",
-    "./wrap/prefix.js",
-    "./lib/capabilities.js",
-    "./lib/sizzle.js",
-    "./lib/dispatcher.js",
-    "./lib/promises.js",
-    "./lib/ajax.js",
-    "./lib/storage.js",
-    "./lib/extend.js",
-    "./lib/router.js",
-    "./flux-classes/actions.js",
-    "./flux-classes/stores.js",
-    "./lib/init.js",
-    "./wrap/suffix.js"
-];
-
-var jsFilesWithCompiler = [
-    "./node_modules/riot/riot+compiler.js",
     "./wrap/prefix.js",
     "./lib/capabilities.js",
     "./lib/sizzle.js",
@@ -51,13 +33,9 @@ module.exports = function(grunt) {
         },
 
         concat: {
-            concat_js_wo_compiler: {
+            concat_js: {
                 src: jsFiles,
                 dest: compiledFile,
-            },
-            concat_js_with_compiler: {
-                src: jsFilesWithCompiler,
-                dest: compiledFileWithCompiler,
             }
         },
 
@@ -66,11 +44,23 @@ module.exports = function(grunt) {
                 files: {
                     'veronica.min.js': ['veronica.js']
                 }
-            },
-            veronica_compiler: {
-                files: {
-                    'veronica+compiler.min.js': ['veronica+compiler.js']
-                }
+            }
+        },
+
+        copy: {
+            main: {
+                files: [
+                    {
+                        expand: true,
+                        src: ['./veronica.js'],
+                        dest: './demo/page-transition/'
+                    },
+                    {
+                        expand: true,
+                        src: ['./veronica.js'],
+                        dest: './demo/shoppingbag/'
+                    }
+                ]
             }
         }
     });
@@ -84,6 +74,9 @@ module.exports = function(grunt) {
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
+    // Load the plugin that provides the "copy" task.
+    grunt.loadNpmTasks("grunt-contrib-copy");
+
     //Task for building the static contents of the application
-    grunt.registerTask("default", ["clean:pre_build", "concat","uglify"]);
+    grunt.registerTask("default", ["clean:pre_build", "concat", "uglify","copy"]);
 };

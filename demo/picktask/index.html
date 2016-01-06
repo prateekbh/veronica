@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdn.muicss.com/mui-0.2.9/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.2.9/js/mui.min.js"></script>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;
+    }
+        task{
+            margin:10px;
+            display: block;
+        }
+        task.readonly{
+
+        }
+    </style>
+</head>
+
+<body>
+<div class="mui-container-fluid">
+    <div class="app-body">
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/riot/2.3.12/riot+compiler.min.js"></script>
+    <script type="text/javascript" src="./veronica.js"></script>
+    <script src="./actions/TasksAction.js"></script>
+    <script src="./stores/TasksStore.js"></script>
+    <script type="riot/tag" src="./tags/home.html"></script>
+    <script type="riot/tag" src="./tags/results.html"></script>
+    <script type="riot/tag" src="tags/task.html"></script>
+    <script type="riot/tag" src="tags/taskslist.html"></script>
+    <script type="riot/tag" src="./tags/picker.html"></script>
+    <script>
+      veronica.addRoute(veronica.createRoute("home", "/", "home"));
+      veronica.addRoute(veronica.createRoute("picker", "/picker", "picker"));
+      veronica.addRoute(veronica.createRoute("results", "/results", "results"));
+    </script>
+    </div>
+</body>
+
+</html>
