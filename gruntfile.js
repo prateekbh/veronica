@@ -14,7 +14,6 @@ var jsFiles = [
     "./lib/dispatcher.js",
     "./lib/promises.js",
     "./lib/ajax.js",
-    "./lib/storage.js",
     "./lib/extend.js",
     "./lib/router.js",
     "./flux-classes/actions.js",

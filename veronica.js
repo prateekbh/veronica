@@ -2,7 +2,7 @@
     "use strict";
 
     var veronica = {
-        version: "v0.9.2",
+        version: "v1.0-beta",
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,
@@ -431,64 +431,6 @@ Description : This facilitates a mock sizzle selector
     gems.httpGlobal.setGlobalData=setGlobalData;
 
 })(gems);
-/* Persistance===============*/
-(function(gems) {
-    var componentDataStore = {};
-
-    gems.Storage={};
-
-    /* Session */
-    var sessionData = [];
-
-    function setSessionData(key, obj) {
-        if (sessionStorage) {
-            sessionStorage[key] = obj;
-        } else {
-            sessionData[key] = obj;
-        }
-    }
-
-    function getSessionData(key) {
-        return sessionStorage[key] || sessionData[key];
-    }
-
-    gems.Storage.Session = {
-        set: setSessionData,
-        get: getSessionData
-    };
-
-
-    /* DS */
-    var DsData = [];
-
-    function setDsData(key, obj) {
-        if (localStorage) {
-            localStorage[key] = obj;
-        } else {
-            DsData[key] = obj;
-        }
-    }
-
-    function getDsData(key) {
-        return localStorage[key] || DsData[key];
-    }
-
-    function removeData(key) {
-        if (localStorage) {
-            localStorage.removeItem(key);
-        } else {
-            delete DsData[key];
-        }
-    }
-
-    gems.Storage.DS = {
-        set: setDsData,
-        get: getDsData,
-        removeData: removeData
-    };
-
-})(gems);
-/* Utils===============*/
 /*============================
 Author : Prateek Bhatnagar
 Data : 6th-Sept-2015
@@ -808,7 +750,7 @@ Description : This is the base class
             trigger: Dispatcher.trigger
         };
         this.Ajax = http;
-        this.Promise = promise;
+        this.Promise = promise.Promise;
     }
 
     gems.flux.Actions.createAction=function(actionName,childClass){
@@ -839,24 +781,28 @@ Data : 6th-Sept-2015
 Description : This is the base class for stores
 =============================*/
 ;
-(function(veronica, Dispatcher,PubSub) {
+(function(veronica, Dispatcher, PubSub, promise) {
     var stores = {};
     gems.flux.Stores = {};
 
     function Store() {
-        var PB=new PubSub();
+        var PB = new PubSub();
         this.Dispatcher = {
             register: Dispatcher.on,
             unregister: Dispatcher.off,
             once: Dispatcher.once
         };
-        this.Storage = gems.Storage;
-        this.subscribe=PB.on;
-        this.unsubscribe=PB.off;
-        this.emit=function(eventName){PB.trigger(eventName,{});}
+        //no more including this wrapper
+        //this.Storage = gems.Storage;
+        this.subscribe = PB.on;
+        this.unsubscribe = PB.off;
+        this.Promise = promise.Promise;
+        this.emit = function(eventName) {
+            PB.trigger(eventName, {});
+        }
     }
 
-    gems.flux.Stores.createStore = function(storeName,childClass) {
+    gems.flux.Stores.createStore = function(storeName, childClass) {
         try {
             var klass = gems.extender(Store, childClass);
             stores[storeName] = new klass();
@@ -870,8 +816,7 @@ Description : This is the base class for stores
         return stores[name];
     }
 
-})(veronica, gems.Dispatcher,gems.PB);
-
+})(veronica, gems.Dispatcher, gems.PB, gems.promise);
 /*============================
 Author : Prateek Bhatnagar
 Data : 7th-Sept-2015
@@ -890,12 +835,14 @@ Description : This facilitates the initialization of the framework
         }
 
         //mount riot
-        riot.mount("*", {});
+        //only mount pages else some components might get mounted twice
+        //riot.mount("*", {});
 
         //mount initial page
         if(gems.totalRouteLength()>0){
             veronica.loc(location.pathname);
             gems.Dispatcher.trigger("veronica:init");
+            window.dispatchEvent(gems.capabilities.createEvent("veronica:init"));
         }
 
         document.addEventListener("click", gems.capabilities.handleClick);

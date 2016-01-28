@@ -2,7 +2,7 @@
     "use strict";
 
     var veronica = {
-        version: "v0.9.2",
+        version: "v1.0-beta",
         settings: {
             viewTag: ".app-body",
             maxPageTransitionTime: 200,

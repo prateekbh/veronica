@@ -10,7 +10,7 @@ Based on Facebook's flux architecture this framework is focused but not restrict
 In footsteps of [flux](https://facebook.github.io/flux/docs/overview.html) framework, veronica boots itself with a singleton dispatcher and ability to create singleton stores and actions (can have multiple instances).
 
 ### How to use
-With version 0.9.2, Veronica no longer pre-compiles itself with Riot. This means that you are free to use any version of Riot you wish for with veronica.
+With version 0.9.2 onwards, Veronica no longer pre-compiles itself with Riot. This means that you are free to use any version of Riot you wish for with veronica.
 Current we are tesing a no. of Riot's versions with Veronica all successfully working version's list will be update soon
 
 ```html
@@ -165,22 +165,23 @@ Now upon state change outgoing state is given class "unmount/unmount-pop" and in
 Please use CSS3 Transitions upon these classes to put exit and entry animations of the various components.
 
 ### Changelog
-- 0.0.1     Basic APIs + push-state router to work with different components
-- 0.5.0     Introduced Flux architecture and segregated API for different components
-- 0.6.0     Introduced switch for page transitioning 
+- 0.0.1         Basic APIs + push-state router to work with different components
+- 0.5.0         Introduced Flux architecture and segregated API for different components
+- 0.6.0         Introduced switch for page transitioning 
 - 0.6.1,0.6.2   Minor bug fixes
-- 0.6.3     Adding replaceLocation functionality to router
-- 0.6.4     Store and action creation name api change
-- 0.6.5     Global Ajax and Data setter and getter
-- 0.6.6     HTML remove function bug fix
-- 0.7.0     Enabling page transitions
-- 0.7.1     Switch for Pop State listener to default veronica router
-- 0.8.0     Regex free router
-- 0.8.1     Push state data bug fix
-- 0.8.2     Unmount bug fix
-- 0.9.0     Ajax enhancements
-- 0.9.1     Strict versioning of node modules
-- 0.9.2     Removing Riot as a pre-compiled dependency
+- 0.6.3         Adding replaceLocation functionality to router
+- 0.6.4         Store and action creation name api change
+- 0.6.5         Global Ajax and Data setter and getter
+- 0.6.6         HTML remove function bug fix
+- 0.7.0         Enabling page transitions
+- 0.7.1         Switch for Pop State listener to default veronica router
+- 0.8.0         Regex free router
+- 0.8.1         Push state data bug fix
+- 0.8.2         Unmount bug fix
+- 0.9.0         Ajax enhancements
+- 0.9.1         Strict versioning of node modules
+- 0.9.2         Removing Riot as a pre-compiled dependency
+- 1.0 beta    Removing Storage Wrapper, Mounting only Routed Pages.
 
 
 

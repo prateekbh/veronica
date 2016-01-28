@@ -12,7 +12,7 @@ Description : This is the base class
             trigger: Dispatcher.trigger
         };
         this.Ajax = http;
-        this.Promise = promise;
+        this.Promise = promise.Promise;
     }
 
     gems.flux.Actions.createAction=function(actionName,childClass){
